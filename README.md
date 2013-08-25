@@ -6,7 +6,7 @@ Python script to keep track of website changes (or changes of parts of websites)
 To specify which parts of a website should be monitored, <em>both CSS selectors</em> (e.g. "p .theClass") <em>or regular expressions can be used</em>.
 
 
-<em>Requires</em> BautifulSoup and soupselect (http://code.google.com/p/soupselect/).
+<em>Requires</em> BeautifulSoup and soupselect (http://code.google.com/p/soupselect/).
 
 Configuration can be done by editing the MailWebsiteChanges.py file:
 Some examples (use "html" to enable CSS selector mode or "text to use regular expressions):
