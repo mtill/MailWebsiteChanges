@@ -1,32 +1,13 @@
 #!/usr/bin/python
 
-from BeautifulSoup import BeautifulSoup as Soup
-from soupselect import select
-import urllib
-import os.path
 import smtplib
 from email.mime.text import MIMEText
-import re
-
-# some examples; use "html" to enable CSS selector mode or "text to use regular expressions
-sites = [['shortname1', 'http://www.mywebsite1.com/info', 'html', 'h1'],
-         ['shortname2', 'http://www.mywebsite2.com/info', 'html', '.theClass > h3'],
-         ['shortname3', 'http://www.mywebsite3.com', 'text', 'Version\"\:\d*\.\d*']
-        ]
+import os.path
+import func
+import config
 
 
-#os.chdir('/path/to/working/directory')
-subjectPostfix = 'A website has been updated!'
-sender = 'me@mymail.com'
-smtptlshost = 'mysmtpprovider.com'
-smtptlsport = 587
-smtptlsusername = sender
-smtptlspwd = 'mypassword'
-receiver = 'me2@mymail.com'
-
-
-
-for site in sites:
+for site in config.sites:
 
 	fileContent = ''
 	firstTime = 1
@@ -37,25 +18,7 @@ for site in sites:
 		file.close()
 		firstTime = 0
 
-	if site[2] == 'html':
-		soup = Soup(urllib.urlopen(site[1]))
-		result = select(soup, site[3])
-		if len(result) == 0:
-			content = "WARNING: selector became invalid!"
-		else:
-			content = str(result[0])
-
-	elif site[2] == 'text':
-		file = urllib.urlopen(site[1])
-		result = re.findall(r'' + site[3], file.read())
-		if result == None:
-			content = "WARNING: regex became invalid!"
-		else:
-			content = '\n'.join(result)
-		file.close()
-	else:
-		print 'Invalid content type!'
-		exit(1)
+	content = func.parseSite(site)
 
 	if content != fileContent:
 		print site[0] + ' has been updated.'
@@ -66,14 +29,14 @@ for site in sites:
 
 		if firstTime == 0:
 			mail = MIMEText(content)
-			mail['From'] = sender
-			mail['To'] = receiver
-			mail['Subject'] = '[' + site[0] + '] ' + subjectPostfix
+			mail['From'] = config.sender
+			mail['To'] = config.receiver
+			mail['Subject'] = '[' + site[0] + '] ' + config.subjectPostfix
 
-			s = smtplib.SMTP(smtptlshost, smtptlsport)
+			s = smtplib.SMTP(config.smtptlshost, config.smtptlsport)
 			s.ehlo()
 			s.starttls()
-			s.login(smtptlsusername, smtptlspwd)
-			s.sendmail(sender, receiver, mail.as_string())
+			s.login(config.smtptlsusername, config.smtptlspwd)
+			s.sendmail(config.sender, config.receiver, mail.as_string())
 			s.quit()
 
