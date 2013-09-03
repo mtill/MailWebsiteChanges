@@ -1,24 +1,34 @@
-MailWebsiteChanges
-==================
+*** MailWebsiteChanges ***
 
 Python script to keep track of website changes (or changes of parts of websites); sends email notifications on updates
 
-To specify which parts of a website should be monitored, <em>both CSS selectors</em> (e.g. "p .theClass") <em>or regular expressions can be used</em>.
+To specify which parts of a website should be monitored, <b>both CSS selectors</b> (e.g. "p .theClass") <b>and regular expressions can be used</b>.
 
 
-<em>Requires</em> BeautifulSoup and soupselect (http://code.google.com/p/soupselect/).
-
-Configuration can be done by editing the MailWebsiteChanges.py file:
-Some examples (use "html" to enable CSS selector mode or "text to use regular expressions):
+Configuration can be done by creating a <code>config.py</code> file:
+Some examples:
 <pre>
 <code>
-    sites = [['rockbox', 'http://www.rockbox.org/download/', 'html', 'h1'],
-         ['calibre', 'http://calibre-ebook.com/download_linux', 'html', '#content p'],
-         ['Firmware', 'http://www.examplevendorsite1.com/firmware', 'text', 'Version\"\:\d*\.\d*']
-        ]
+ short name | URI [| CSS selector] [| regular expression]
+
+ sites = [['shortname1', 'http://www.mywebsite1.com/info', 'h1', ''],
+          ['shortname2', 'http://www.mywebsite2.com/info', '.theClass > h3', ''],
+          ['shortname3', 'http://www.mywebsite3.com', '', 'Version\"\:\d*\.\d*']
+         ]
+
+ subjectPostfix = 'A website has been updated!'
+ sender = 'me@mymail.com'
+ smtptlshost = 'mysmtpprovider.com'
+ smtptlsport = 587
+ smtptlsusername = sender
+ smtptlspwd = 'mypassword'
+ receiver = 'me2@mymail.com'
+
+ os.chdir('/path/to/working/directory')
 </code>
 </pre>
 
+<b>Requires</b> <a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a> and <a href="http://code.google.com/p/soupselect/">soupselect</a>.
 
-<em>SelectorTest.py</em> might be useful in order to test the definitions before integrating them into the main script.
+<em>SelectorTest.py</em> might be useful in order to test the definitions before integrating them into the config file.
 

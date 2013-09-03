@@ -1,7 +1,7 @@
 import os.path
 
 # remember to rename this file to "config.py"
-# some examples; 1) short name 2) URI 3) CSS selector (may be empty) 4) regular expression (may be empty)
+# some examples (short name | URI [| CSS selector] [| regular expression])
 sites = [['shortname1', 'http://www.mywebsite1.com/info', 'h1', ''],
          ['shortname2', 'http://www.mywebsite2.com/info', '.theClass > h3', ''],
          ['shortname3', 'http://www.mywebsite3.com', '', 'Version\"\:\d*\.\d*']

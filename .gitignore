@@ -1,4 +1,6 @@
 /soupselect.py
 /config.py
+/*.txt
+*~
 *.pyc
 
