@@ -5,11 +5,11 @@ Python script to keep track of website changes (or changes of parts of websites)
 To specify which parts of a website should be monitored, <b>both CSS selectors</b> (e.g. "p .theClass") <b>and regular expressions can be used</b>.
 
 ## Configuration
-Configuration can be done by creating a <code>config.py</code> file:
+Configuration can be done by creating a <code>config.py</code> file (just place this file in the program folder):
 Some examples:
 <pre>
 <code>
- short name | URI [| CSS selector] [| regular expression]
+ # short name | URI [| CSS selector] [| regular expression]
 
  sites = [['shortname1', 'http://www.mywebsite1.com/info', 'h1', ''],
           ['shortname2', 'http://www.mywebsite2.com/info', '.theClass > h3', ''],
@@ -31,5 +31,5 @@ Some examples:
 <em>SelectorTest.py</em> might be useful in order to test the definitions before integrating them into the config file.
 
 ## Requirements
-<b>Requires</b> <a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a> and <a href="http://code.google.com/p/soupselect/">soupselect</a>.
+Requires <a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a> and <a href="http://code.google.com/p/soupselect/">soupselect</a>.
 
