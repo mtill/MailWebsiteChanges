@@ -1,10 +1,10 @@
-*** MailWebsiteChanges ***
+# MailWebsiteChanges
 
 Python script to keep track of website changes (or changes of parts of websites); sends email notifications on updates
 
 To specify which parts of a website should be monitored, <b>both CSS selectors</b> (e.g. "p .theClass") <b>and regular expressions can be used</b>.
 
-
+## Configuration
 Configuration can be done by creating a <code>config.py</code> file:
 Some examples:
 <pre>
@@ -28,7 +28,8 @@ Some examples:
 </code>
 </pre>
 
-<b>Requires</b> <a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a> and <a href="http://code.google.com/p/soupselect/">soupselect</a>.
-
 <em>SelectorTest.py</em> might be useful in order to test the definitions before integrating them into the config file.
+
+## Requirements
+<b>Requires</b> <a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a> and <a href="http://code.google.com/p/soupselect/">soupselect</a>.
 
