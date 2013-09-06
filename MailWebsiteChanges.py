@@ -8,12 +8,14 @@ import smtplib
 from email.mime.text import MIMEText
 import os.path
 import sys
-from feedformatter import Feed
 import time
+from time import strftime
+from xml.dom.minidom import parse, parseString
 
 import config
 
 separator = '\n\n'
+emptyfeed = '<rss version="2.0"><channel><title>MailWebsiteChanges Feed</title><link>https://github.com/Debianguru/MailWebsiteChanges</link><description>The MailWebsiteChanges Feed</description></channel></rss>'
 
 
 def parseSite(uri, css, regex):
@@ -68,11 +70,12 @@ def sendmail(subject, content, sendAsHtml):
 
 def pollWebsites():
 
-	feed = Feed()
-	feed.feed['title'] = 'MailWebsiteChanges Feed'
-	feed.feed['link'] = 'https://github.com/Debianguru/MailWebsiteChanges'
-	feed.feed['author'] = 'Debian Guru'
-	feed.feed['description'] = 'The MailWebsiteChanges Feed'
+	if config.rssfile != '':
+		if os.path.isfile(config.rssfile):
+			feedXML = parse(config.rssfile)
+		else:
+			feedXML = parseString(emptyfeed)
+
 
 	for site in config.sites:
 
@@ -91,7 +94,9 @@ def pollWebsites():
 
 		if isWarning == 1:
 			subject = '[' + site[0] + '] WARNING'
-			sendmail(subject, content)
+			print 'WARNING: ' + content
+			if config.receiver != '':
+				sendmail(subject, content)
 		elif content != fileContent:
 			print site[0] + ' has been updated.'
 
@@ -107,20 +112,35 @@ def pollWebsites():
 						sendAsHtml = 0
 					sendmail(subject, content, sendAsHtml)
 
-				feeditem = {}
-				feeditem['title'] = subject
-				feeditem['link'] = site[1]
-				feeditem['description'] = subject
-				feeditem['pubDate'] = time.localtime()
-				feed.items.append(feeditem)
+				if config.rssfile != '':
+					feeditem = feedXML.createElement('item')
+					titleitem = feedXML.createElement('title')
+					titleitem.appendChild(feedXML.createTextNode(subject))
+					feeditem.appendChild(titleitem)
+					linkitem = feedXML.createElement('link')
+					linkitem.appendChild(feedXML.createTextNode(site[1]))
+					feeditem.appendChild(linkitem)
+					descriptionitem = feedXML.createElement('description')
+					descriptionitem.appendChild(feedXML.createTextNode(subject))
+					feeditem.appendChild(descriptionitem)
+					dateitem = feedXML.createElement('pubDate')
+					dateitem.appendChild(feedXML.createTextNode(strftime("%a, %d %b %Y %H:%M:%S %Z", time.localtime())))
+					feeditem.appendChild(dateitem)
+
+					feedXML.getElementsByTagName('channel')[0].appendChild(feeditem)
 
 	if config.rssfile != '':
-		feed.format_rss2_file(config.rssfile)
+		file = open(config.rssfile, 'w')
+		file.write(feedXML.toxml())
+		file.close()
 
 
 if __name__ == "__main__":
 	try:
 		pollWebsites()
 	except:
-		sendmail('[MailWebsiteChanges] Something went wrong ...', separator.join(map(str,sys.exc_info())), 0)
+		msg = separator.join(map(str,sys.exc_info()))
+		print msg
+		if config.receiver != '':
+			sendmail('[MailWebsiteChanges] Something went wrong ...', msg, 0)
 
