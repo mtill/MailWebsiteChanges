@@ -8,8 +8,10 @@ import smtplib
 from email.mime.text import MIMEText
 import os.path
 import sys
-import config
+from feedformatter import Feed
+import time
 
+import config
 
 separator = '\n\n'
 
@@ -65,6 +67,13 @@ def sendmail(subject, content, sendAsHtml):
 
 
 def pollWebsites():
+
+	feed = Feed()
+	feed.feed['title'] = 'MailWebsiteChanges Feed'
+	feed.feed['link'] = 'https://github.com/Debianguru/MailWebsiteChanges'
+	feed.feed['author'] = 'Debian Guru'
+	feed.feed['description'] = 'The MailWebsiteChanges Feed'
+
 	for site in config.sites:
 
 		fileContent = ''
@@ -92,10 +101,21 @@ def pollWebsites():
 
 			if firstTime == 0:
 				subject = '[' + site[0] + '] ' + config.subjectPostfix
-				sendAsHtml = 1
-				if site[2] == '':
-					sendAsHtml = 0
-				sendmail(subject, content, sendAsHtml)
+				if config.receiver != '':
+					sendAsHtml = 1
+					if site[2] == '':
+						sendAsHtml = 0
+					sendmail(subject, content, sendAsHtml)
+
+				feeditem = {}
+				feeditem['title'] = subject
+				feeditem['link'] = site[1]
+				feeditem['description'] = content
+				feeditem['pubDate'] = time.localtime()
+				feed.items.append(feeditem)
+
+	if config.rssfile != '':
+		feed.format_rss2_file(config.rssfile)
 
 
 if __name__ == "__main__":
