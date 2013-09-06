@@ -110,7 +110,7 @@ def pollWebsites():
 				feeditem = {}
 				feeditem['title'] = subject
 				feeditem['link'] = site[1]
-				feeditem['description'] = content
+				feeditem['description'] = subject
 				feeditem['pubDate'] = time.localtime()
 				feed.items.append(feeditem)
 
