@@ -46,8 +46,12 @@ def parseSite(uri, css, regex):
 	return content, isWarning
 
 
-def sendmail(subject, content):
-	mail = MIMEText(content)
+def sendmail(subject, content, sendAsHtml):
+	if sendAsHtml == 1:
+		mail = MIMEText('<html><head><title>' + subject + '</title></head><body>' + content + '</body></html>', 'html')
+	else:
+		mail = MIMEText(content)
+
 	mail['From'] = config.sender
 	mail['To'] = config.receiver
 	mail['Subject'] = subject
@@ -88,12 +92,15 @@ def pollWebsites():
 
 			if firstTime == 0:
 				subject = '[' + site[0] + '] ' + config.subjectPostfix
-				sendmail(subject, content)
+				sendAsHtml = 1
+				if site[2] == '':
+					sendAsHtml = 0
+				sendmail(subject, content, sendAsHtml)
 
 
 if __name__ == "__main__":
 	try:
 		pollWebsites()
 	except:
-		sendmail('[MailWebsiteChanges] Something went wrong ...', '\n'.join(map(str,sys.exc_info())))
+		sendmail('[MailWebsiteChanges] Something went wrong ...', separator.join(map(str,sys.exc_info())), 0)
 
