@@ -79,14 +79,12 @@ def pollWebsites():
 
 	for site in config.sites:
 
-		fileContent = ''
-		firstTime = 1
+		fileContent = None
 
 		if os.path.isfile(site[0] + '.txt'):
 			file = open(site[0] + '.txt', 'r')
 			fileContent = file.read()
 			file.close()
-			firstTime = 0
 
 		result = parseSite(site[1], site[2], site[3])
 		content = result[0]
@@ -104,7 +102,7 @@ def pollWebsites():
 			file.write(content)
 			file.close()
 
-			if firstTime == 0:
+                        if fileContent:
 				subject = '[' + site[0] + '] ' + config.subjectPostfix
 				if config.receiver != '':
 					sendAsHtml = 1
