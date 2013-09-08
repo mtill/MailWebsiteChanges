@@ -19,12 +19,13 @@ emptyfeed = '<rss version="2.0"><channel><title>MailWebsiteChanges Feed</title><
 
 
 def parseSite(uri, css, regex):
-	isWarning = 0
+        content, warning = None, None
 
 	try:
 		file = urllib.urlopen(uri)
 	except IOError as e:
-		return 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e), 1
+		warning = 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e)
+		return content, warning
 
 	if css == '':
 		content = file.read()
@@ -33,21 +34,19 @@ def parseSite(uri, css, regex):
 
 		result = select(soup, css)
 		if len(result) == 0:
-			content = "WARNING: selector became invalid!"
-			isWarning = 1
+			warning = "WARNING: selector became invalid!"
 		else:
 			content = separator.join(map(str, result))
 
 	if regex != '':
 		result = re.findall(r'' + regex, content)
 		if result == None:
-			content = "WARNING: regex became invalid!"
-			isWarning = 1
+			warning = "WARNING: regex became invalid!"
 		else:
 			content = separator.join(result)
 
 	file.close()
-	return content, isWarning
+	return content, warning
 
 
 def sendmail(subject, content, sendAsHtml):
@@ -86,15 +85,13 @@ def pollWebsites():
 			fileContent = file.read()
 			file.close()
 
-		result = parseSite(site[1], site[2], site[3])
-		content = result[0]
-		isWarning = result[1]
+		content, warning = parseSite(site[1], site[2], site[3])
 
-		if isWarning == 1:
+		if warning:
 			subject = '[' + site[0] + '] WARNING'
-			print 'WARNING: ' + content
+			print 'WARNING: ' + warning
 			if config.receiver != '':
-				sendmail(subject, content)
+				sendmail(subject, warning)
 		elif content != fileContent:
 			print site[0] + ' has been updated.'
 
