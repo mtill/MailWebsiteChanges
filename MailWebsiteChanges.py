@@ -51,7 +51,7 @@ def parseSite(uri, css, regex):
 
 
 def sendmail(subject, content, sendAsHtml):
-	if sendAsHtml == 1:
+	if sendAsHtml:
 		mail = MIMEText('<html><head><title>' + subject + '</title></head><body>' + content + '</body></html>', 'html')
 	else:
 		mail = MIMEText(content)
@@ -105,9 +105,7 @@ def pollWebsites():
                         if fileContent:
 				subject = '[' + site[0] + '] ' + config.subjectPostfix
 				if config.receiver != '':
-					sendAsHtml = 1
-					if site[2] == '':
-						sendAsHtml = 0
+					sendAsHtml = False if site[2] == '' else True
 					sendmail(subject, content, sendAsHtml)
 
 				if config.rssfile != '':
