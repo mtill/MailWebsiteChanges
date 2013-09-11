@@ -94,7 +94,7 @@ def pollWebsites():
                         subject = '[' + site[0] + '] WARNING'
                         print 'WARNING: ' + warning
                         if config.receiver != '':
-                                sendmail(subject, warning, defaultEncoding)
+                                sendmail(subject, warning, False, defaultEncoding)
                 elif content != fileContent:
                         print site[0] + ' has been updated.'
 
@@ -106,7 +106,7 @@ def pollWebsites():
                                 subject = '[' + site[0] + '] ' + config.subjectPostfix
                                 if config.receiver != '':
                                         sendAsHtml = site[2] != ''
-                                        sendmail(subject, content, sendAsHtml, site[3])
+                                        sendmail(subject, content, sendAsHtml, site[4])
 
                                 if config.rssfile != '':
                                         feeditem = feedXML.createElement('item')
@@ -138,5 +138,5 @@ if __name__ == "__main__":
                 msg = separator.join(map(str,sys.exc_info()))
                 print msg
                 if config.receiver != '':
-                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, 0, defaultEncoding)
+                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, defaultEncoding)
 
