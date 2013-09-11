@@ -6,6 +6,7 @@ import urllib
 import re
 import smtplib
 from email.mime.text import MIMEText
+from email.header import Header
 import os.path
 import sys
 import time
@@ -15,6 +16,7 @@ from xml.dom.minidom import parse, parseString
 import config
 
 separator = '\n\n'
+defaultEncoding = 'utf-8'
 emptyfeed = '<rss version="2.0"><channel><title>MailWebsiteChanges Feed</title><link>https://github.com/Debianguru/MailWebsiteChanges</link><description>The MailWebsiteChanges Feed</description></channel></rss>'
 
 
@@ -49,15 +51,15 @@ def parseSite(uri, css, regex):
         return content, warning
 
 
-def sendmail(subject, content, sendAsHtml):
+def sendmail(subject, content, sendAsHtml, encoding):
         if sendAsHtml:
-                mail = MIMEText('<html><head><title>' + subject + '</title></head><body>' + content + '</body></html>', 'html')
+                mail = MIMEText('<html><head><title>' + subject + '</title></head><body>' + content + '</body></html>', 'html', encoding)
         else:
-                mail = MIMEText(content)
+                mail = MIMEText(content, 'text', encoding)
 
         mail['From'] = config.sender
         mail['To'] = config.receiver
-        mail['Subject'] = subject
+        mail['Subject'] = Header(subject, encoding)
 
         s = smtplib.SMTP(config.smtptlshost, config.smtptlsport)
         s.ehlo()
@@ -85,13 +87,14 @@ def pollWebsites():
                         fileContent = file.read()
                         file.close()
 
+		print 'polling site [' + site[0] + '] ...'
                 content, warning = parseSite(site[1], site[2], site[3])
 
                 if warning:
                         subject = '[' + site[0] + '] WARNING'
                         print 'WARNING: ' + warning
                         if config.receiver != '':
-                                sendmail(subject, warning)
+                                sendmail(subject, warning, defaultEncoding)
                 elif content != fileContent:
                         print site[0] + ' has been updated.'
 
@@ -102,8 +105,8 @@ def pollWebsites():
                         if fileContent:
                                 subject = '[' + site[0] + '] ' + config.subjectPostfix
                                 if config.receiver != '':
-                                        sendAsHtml = False if site[2] == '' else True
-                                        sendmail(subject, content, sendAsHtml)
+                                        sendAsHtml = site[2] != ''
+                                        sendmail(subject, content, sendAsHtml, site[3])
 
                                 if config.rssfile != '':
                                         feeditem = feedXML.createElement('item')
@@ -135,5 +138,5 @@ if __name__ == "__main__":
                 msg = separator.join(map(str,sys.exc_info()))
                 print msg
                 if config.receiver != '':
-                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, 0)
+                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, 0, defaultEncoding)
 
