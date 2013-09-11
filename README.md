@@ -11,11 +11,11 @@ Some examples:
 ### Website definitions
 <pre>
 <code>
- # short name | URI [| CSS selector] [| regular expression]
+ # short name | URI | CSS selector | regular expression | encoding
 
- sites = [['shortname1', 'http://www.mywebsite1.com/info', 'h1', ''],
-          ['shortname2', 'http://www.mywebsite2.com/info', '.theClass > h3', ''],
-          ['shortname3', 'http://www.mywebsite3.com', '', 'Version\"\:\d*\.\d*']
+ sites = [['shortname1', 'http://www.mywebsite1.com/info', 'h1', '', 'utf-8'],
+          ['shortname2', 'http://www.mywebsite2.com/info', '.theClass > h3', '', 'utf-8'],
+          ['shortname3', 'http://www.mywebsite3.com', '', 'Version\"\:\d*\.\d*', 'utf-8']
          ]
 </code>
 </pre>
