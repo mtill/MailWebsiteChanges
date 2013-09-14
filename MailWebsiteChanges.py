@@ -51,10 +51,14 @@ def parseSite(uri, css, regex):
         return content, warning
 
 
-def sendmail(subject, content, sendAsHtml, encoding):
+def sendmail(subject, content, sendAsHtml, encoding, link):
         if sendAsHtml:
+                if link != None:
+                        content = '<p><a href="' + link + '">' + subject + '</a></p>\n' + content
                 mail = MIMEText('<html><head><title>' + subject + '</title></head><body>' + content + '</body></html>', 'html', encoding)
         else:
+                if link != None:
+                        content = link + '\n\n' + content
                 mail = MIMEText(content, 'text', encoding)
 
         mail['From'] = config.sender
@@ -94,9 +98,9 @@ def pollWebsites():
                         subject = '[' + site[0] + '] WARNING'
                         print 'WARNING: ' + warning
                         if config.receiver != '':
-                                sendmail(subject, warning, False, defaultEncoding)
+                                sendmail(subject, warning, False, defaultEncoding, None)
                 elif content != fileContent:
-                        print site[0] + ' has been updated.'
+                        print '[' + site[0] + '] has been updated.'
 
                         file = open(site[0] + '.txt', 'w')
                         file.write(content)
@@ -105,8 +109,7 @@ def pollWebsites():
                         if fileContent:
                                 subject = '[' + site[0] + '] ' + config.subjectPostfix
                                 if config.receiver != '':
-                                        sendAsHtml = site[2] != ''
-                                        sendmail(subject, content, sendAsHtml, site[4])
+                                        sendmail(subject, content, (site[2] != ''), site[4], site[1])
 
                                 if config.rssfile != '':
                                         feeditem = feedXML.createElement('item')
@@ -138,5 +141,5 @@ if __name__ == "__main__":
                 msg = separator.join(map(str,sys.exc_info()))
                 print msg
                 if config.receiver != '':
-                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, defaultEncoding)
+                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, defaultEncoding, None)
 
