@@ -20,6 +20,19 @@ Some examples:
 </code>
 </pre>
 
+ * short name
+     + short name of the entry, used as an identifier when sending email notifications
+ * URI
+     + URI of the website
+ * content type
+     + content type of the website, e.g., 'xml'/'html'/'text'
+ * XPath
+     + XPath expression. Set this to '' if you don't want to use it.
+ * regular expression
+     + Regular expression. Set this to '' if you don't want to use it.
+ * encoding
+     + Character encoding of the website, e.g., 'utf-8'.
+
 <em>SelectorTest.py</em> might be useful in order to test the definitions before integrating them into the config file.
 
 ### Mail settings

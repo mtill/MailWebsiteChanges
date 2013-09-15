@@ -23,11 +23,11 @@ defaultEncoding = 'utf-8'
 emptyfeed = '<rss version="2.0"><channel><title>MailWebsiteChanges Feed</title><link>https://github.com/Debianguru/MailWebsiteChanges</link><description>The MailWebsiteChanges Feed</description></channel></rss>'
 
 
-def parseSite(uri, contenttype, css, regex, enc):
+def parseSite(uri, contenttype, xpathquery, regex, enc):
         content, warning = None, None
 
         try:
-                if css == '':
+                if xpathquery == '':
                         file = urllib.urlopen(uri)
                         content = file.read()
                         file.close()
@@ -38,7 +38,7 @@ def parseSite(uri, contenttype, css, regex, enc):
                                 parser = etree.HTMLParser()
 
                         tree = etree.parse(uri, parser)
-                        result = tree.xpath(css)
+                        result = tree.xpath(xpathquery)
 
                         if len(result) == 0:
                                 warning = "WARNING: selector became invalid!"
