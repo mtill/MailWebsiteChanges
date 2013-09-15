@@ -2,7 +2,7 @@
 
 Python script to keep track of website changes; sends email notifications on updates and/or also provides an RSS feed
 
-To specify which parts of a website should be monitored, <b>both CSS selectors</b> (e.g. "p .theClass") <b>and regular expressions can be used</b>.
+To specify which parts of a website should be monitored, <b>both XPath selectors</b> (e.g. "//h1") <b>and regular expressions can be used</b>.
 
 ## Configuration
 Configuration can be done by creating a <code>config.py</code> file (just place this file in the program folder):
@@ -11,11 +11,11 @@ Some examples:
 ### Website definitions
 <pre>
 <code>
- # short name | URI | CSS selector | regular expression | encoding
+ # short name | URI | content type | XPath | regular expression | encoding
 
- sites = [['shortname1', 'http://www.mywebsite1.com/info', 'h1', '', 'utf-8'],
-          ['shortname2', 'http://www.mywebsite2.com/info', '.theClass > h3', '', 'utf-8'],
-          ['shortname3', 'http://www.mywebsite3.com', '', 'Version\"\:\d*\.\d*', 'utf-8']
+ sites = [['shortname1', 'http://www.mywebsite1.com/info', 'html', '//h1', '', 'utf-8'],
+          ['shortname2', 'http://www.mywebsite2.com/info', 'xml', '//*[contains(concat(\' \', normalize-space(@class), \' \'), \'news-list-container\')]', '', 'utf-8'],
+          ['shortname3', 'http://www.mywebsite3.com', 'text', '', 'Version\"\:\d*\.\d*', 'utf-8']
          ]
 </code>
 </pre>
@@ -53,5 +53,5 @@ If you prefer to use the RSS feature, you just have to specify the path of the f
 
 
 ## Requirements
-Requires <a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a> and <a href="http://code.google.com/p/soupselect/">soupselect</a>.
+Requires <a href="http://lxml.de/">lxml</a>.
 
