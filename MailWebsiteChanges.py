@@ -1,17 +1,20 @@
 #!/usr/bin/python
 
-from BeautifulSoup import BeautifulSoup as Soup
-from soupselect import select
 import urllib
+from lxml import etree
 import re
+from xml.dom.minidom import parse, parseString
+
 import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
+
 import os.path
 import sys
+
 import time
 from time import strftime
-from xml.dom.minidom import parse, parseString
+
 
 import config
 
@@ -20,25 +23,30 @@ defaultEncoding = 'utf-8'
 emptyfeed = '<rss version="2.0"><channel><title>MailWebsiteChanges Feed</title><link>https://github.com/Debianguru/MailWebsiteChanges</link><description>The MailWebsiteChanges Feed</description></channel></rss>'
 
 
-def parseSite(uri, css, regex):
+def parseSite(uri, contenttype, css, regex, enc):
         content, warning = None, None
 
         try:
-                file = urllib.urlopen(uri)
+                if css == '':
+                        file = urllib.urlopen(uri)
+                        content = file.read()
+                        file.close()
+                else:
+                        if contenttype == 'xml':
+                                parser = etree.XMLParser(recover=True)
+                        else:
+                                parser = etree.HTMLParser()
+
+                        tree = etree.parse(uri, parser)
+                        result = tree.xpath(css)
+
+                        if len(result) == 0:
+                                warning = "WARNING: selector became invalid!"
+                        else:
+                                content = separator.join([etree.tostring(s, encoding=enc) for s in result])
         except IOError as e:
                 warning = 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e)
                 return content, warning
-
-        if css == '':
-                content = file.read()
-        else:
-                soup = Soup(file)
-
-                result = select(soup, css)
-                if len(result) == 0:
-                        warning = "WARNING: selector became invalid!"
-                else:
-                        content = separator.join(map(str, result))
 
         if regex != '':
                 result = re.findall(r'' + regex, content)
@@ -47,7 +55,6 @@ def parseSite(uri, css, regex):
                 else:
                         content = separator.join(result)
 
-        file.close()
         return content, warning
 
 
@@ -92,7 +99,7 @@ def pollWebsites():
                         file.close()
 
 		print 'polling site [' + site[0] + '] ...'
-                content, warning = parseSite(site[1], site[2], site[3])
+                content, warning = parseSite(site[1], site[2], site[3], site[4], site[5])
 
                 if warning:
                         subject = '[' + site[0] + '] WARNING'
@@ -109,7 +116,7 @@ def pollWebsites():
                         if fileContent:
                                 subject = '[' + site[0] + '] ' + config.subjectPostfix
                                 if config.receiver != '':
-                                        sendmail(subject, content, (site[2] != ''), site[4], site[1])
+                                        sendmail(subject, content, (site[3] != ''), site[5], site[1])
 
                                 if config.rssfile != '':
                                         feeditem = feedXML.createElement('item')
