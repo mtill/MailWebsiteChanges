@@ -2,7 +2,7 @@
 
 import urllib
 from lxml import etree
-from xml.sax.saxutils import escape
+#from xml.sax.saxutils import escape
 import re
 import StringIO
 
@@ -127,7 +127,6 @@ def pollWebsites():
                                         linkitem.text = site['uri']
                                         feeditem.append(linkitem)
                                         descriptionitem = etree.Element('description')
-                                        print escape(content)
                                         descriptionitem.text = subject  #escape(content)
 
                                         feeditem.append(descriptionitem)
