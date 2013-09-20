@@ -38,15 +38,15 @@ Some examples:
 </code>
 </pre>
 
- * short name
+ * shortname
      + short name of the entry, used as an identifier when sending email notifications
- * URI
+ * uri
      + URI of the website
- * content type
+ * type
      + content type of the website, e.g., 'xml'/'html'/'text'
- * XPath
+ * xpath
      + XPath expression. Set this to '' if you don't want to use it.
- * regular expression
+ * regex
      + Regular expression. Set this to '' if you don't want to use it.
  * encoding
      + Character encoding of the website, e.g., 'utf-8'.
