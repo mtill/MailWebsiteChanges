@@ -1,11 +1,30 @@
 import os.path
 
 # remember to rename this file to "config.py"
-# some examples (short name | URI [| CSS selector] [| regular expression])
-sites = [['shortname1', 'http://www.mywebsite1.com/info', 'h1', ''],
-         ['shortname2', 'http://www.mywebsite2.com/info', '.theClass > h3', ''],
-         ['shortname3', 'http://www.mywebsite3.com', '', 'Version\"\:\d*\.\d*']
-        ]
+ sites = [
+
+          {'shortname': 'mywebsite1',
+           'uri': 'http://www.mywebsite1.com/info',
+           'type': 'html',
+           'xpath': '//h1',
+           'regex': '',
+           'encoding': 'utf-8'},
+
+          {'shortname': 'mywebsite2',
+           'uri': 'http://www.mywebsite2.com/info',
+           'type': 'html',
+           'xpath': '//*[contains(concat(\' \', normalize-space(@class), \' \'), \'news-list-container\')]',
+           'regex': '',
+           'encoding': 'utf-8'},
+
+          {'shortname': 'mywebsite3',
+           'uri': 'http://www.mywebsite3.com/info',
+           'type': 'text',
+           'xpath': '',
+           'regex': 'Version\"\:\d*\.\d*',
+           'encoding': 'utf-8'}
+
+         ]
 
 subjectPostfix = 'A website has been updated!'
 sender = 'me@mymail.com'

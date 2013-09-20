@@ -94,33 +94,33 @@ def pollWebsites():
 
                 fileContent = None
 
-                if os.path.isfile(site[0] + '.txt'):
-                        file = open(site[0] + '.txt', 'r')
+                if os.path.isfile(site['shortname'] + '.txt'):
+                        file = open(site['shortname'] + '.txt', 'r')
                         fileContent = file.read()
                         file.close()
 
-		print 'polling site [' + site[0] + '] ...'
-                content, warning = parseSite(site[1], site[2], site[3], site[4], site[5])
+		print 'polling site [' + site['shortname'] + '] ...'
+                content, warning = parseSite(site['uri'], site['type'], site['xpath'], site['regex'], site['encoding'])
 
                 if warning:
-                        subject = '[' + site[0] + '] WARNING'
+                        subject = '[' + site['shortname'] + '] WARNING'
                         print 'WARNING: ' + warning
                         if config.receiver != '':
                                 sendmail(subject, warning, False, defaultEncoding, None)
                 elif content != fileContent:
-                        print '[' + site[0] + '] has been updated.'
+                        print '[' + site['shortname'] + '] has been updated.'
 
-                        file = open(site[0] + '.txt', 'w')
+                        file = open(site['shortname'] + '.txt', 'w')
                         file.write(content)
                         file.close()
 
                         if fileContent:
-                                subject = '[' + site[0] + '] ' + config.subjectPostfix
+                                subject = '[' + site['shortname'] + '] ' + config.subjectPostfix
                                 if config.receiver != '':
-                                        sendmail(subject, content, (site[3] != ''), site[5], site[1])
+                                        sendmail(subject, content, (site['xpath'] != ''), site['encoding'], site['uri'])
 
                                 if config.rssfile != '':
-                                        #parser=etree.XMLParser(recover=True, encoding=site[5])
+                                        #parser=etree.XMLParser(recover=True, encoding=site['encoding'])
                                         #contentxml=etree.parse(StringIO.StringIO(content), parser)
 
                                         feeditem = etree.Element('item')
@@ -128,7 +128,7 @@ def pollWebsites():
                                         titleitem.text = subject
                                         feeditem.append(titleitem)
                                         linkitem = etree.Element('link')
-                                        linkitem.text = site[1]
+                                        linkitem.text = site['uri']
                                         feeditem.append(linkitem)
                                         descriptionitem = etree.Element('description')
 
@@ -151,11 +151,11 @@ def pollWebsites():
 
 
 if __name__ == "__main__":
-#        try:
+        try:
                 pollWebsites()
-#        except:
-#                msg = separator.join(map(str,sys.exc_info()))
-#                print msg
-#                if config.receiver != '':
-#                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, defaultEncoding, None)
+        except:
+                msg = separator.join(map(str,sys.exc_info()))
+                print msg
+                if config.receiver != '':
+                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, defaultEncoding, None)
 
