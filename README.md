@@ -11,11 +11,29 @@ Some examples:
 ### Website definitions
 <pre>
 <code>
- # short name | URI | content type | XPath | regular expression | encoding
+ sites = [
 
- sites = [['shortname1', 'http://www.mywebsite1.com/info', 'html', '//h1', '', 'utf-8'],
-          ['shortname2', 'http://www.mywebsite2.com/info', 'xml', '//*[contains(concat(\' \', normalize-space(@class), \' \'), \'news-list-container\')]', '', 'utf-8'],
-          ['shortname3', 'http://www.mywebsite3.com', 'text', '', 'Version\"\:\d*\.\d*', 'utf-8']
+          {'shortname': 'mywebsite1',
+           'uri': 'http://www.mywebsite1.com/info',
+           'type': 'html',
+           'xpath': '//h1',
+           'regex': '',
+           'encoding': 'utf-8'},
+
+          {'shortname': 'mywebsite2',
+           'uri': 'http://www.mywebsite2.com/info',
+           'type': 'html',
+           'xpath': '//*[contains(concat(\' \', normalize-space(@class), \' \'), \'news-list-container\')]',
+           'regex': '',
+           'encoding': 'utf-8'},
+
+          {'shortname': 'mywebsite3',
+           'uri': 'http://www.mywebsite3.com/info',
+           'type': 'text',
+           'xpath': '',
+           'regex': 'Version\"\:\d*\.\d*',
+           'encoding': 'utf-8'}
+
          ]
 </code>
 </pre>
