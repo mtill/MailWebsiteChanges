@@ -3,7 +3,6 @@
 import urllib
 from lxml import etree
 import re
-from xml.dom.minidom import parse, parseString
 
 import smtplib
 from email.mime.text import MIMEText
@@ -33,9 +32,9 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
                         file.close()
                 else:
                         if contenttype == 'xml':
-                                parser = etree.XMLParser(recover=True)
+                                parser = etree.XMLParser(recover=True, encoding=enc)
                         else:
-                                parser = etree.HTMLParser()
+                                parser = etree.HTMLParser(encoding=enc)
 
                         tree = etree.parse(uri, parser)
                         result = tree.xpath(xpathquery)
@@ -84,9 +83,11 @@ def pollWebsites():
 
         if config.rssfile != '':
                 if os.path.isfile(config.rssfile):
-                        feedXML = parse(config.rssfile)
+                        feedXML = etree.parse(config.rssfile)
                 else:
-                        feedXML = parseString(emptyfeed)
+                        feedXML = etree.parse(StringIO.StringIO(emptyfeed))
+
+        feedParser = etree.XMLParser(recover=True)
 
 
         for site in config.sites:
@@ -119,34 +120,42 @@ def pollWebsites():
                                         sendmail(subject, content, (site[3] != ''), site[5], site[1])
 
                                 if config.rssfile != '':
-                                        feeditem = feedXML.createElement('item')
-                                        titleitem = feedXML.createElement('title')
-                                        titleitem.appendChild(feedXML.createTextNode(subject))
-                                        feeditem.appendChild(titleitem)
-                                        linkitem = feedXML.createElement('link')
-                                        linkitem.appendChild(feedXML.createTextNode(site[1]))
-                                        feeditem.appendChild(linkitem)
-                                        descriptionitem = feedXML.createElement('description')
-                                        descriptionitem.appendChild(feedXML.createTextNode(subject))
-                                        feeditem.appendChild(descriptionitem)
-                                        dateitem = feedXML.createElement('pubDate')
-                                        dateitem.appendChild(feedXML.createTextNode(strftime("%a, %d %b %Y %H:%M:%S %Z", time.localtime())))
-                                        feeditem.appendChild(dateitem)
+                                        #parser=etree.XMLParser(recover=True, encoding=site[5])
+                                        #contentxml=etree.parse(StringIO.StringIO(content), parser)
 
-                                        feedXML.getElementsByTagName('channel')[0].appendChild(feeditem)
+                                        feeditem = etree.Element('item')
+                                        titleitem = etree.Element('title')
+                                        titleitem.text = subject
+                                        feeditem.append(titleitem)
+                                        linkitem = etree.Element('link')
+                                        linkitem.text = site[1]
+                                        feeditem.append(linkitem)
+                                        descriptionitem = etree.Element('description')
+
+                                        #if contentxml.getroot() != None:
+                                        #        descriptionitem.append(contentxml.getroot())
+                                        #else:
+                                        descriptionitem.text = subject #etree.tostring(contentxml, method='text')
+
+                                        feeditem.append(descriptionitem)
+                                        dateitem = etree.Element('pubDate')
+                                        dateitem.text = strftime("%a, %d %b %Y %H:%M:%S %Z", time.localtime())
+                                        feeditem.append(dateitem)
+
+                                        feedXML.xpath('//channel')[0].append(feeditem)
 
         if config.rssfile != '':
                 file = open(config.rssfile, 'w')
-                file.write(feedXML.toxml())
+                file.write(etree.tostring(feedXML))
                 file.close()
 
 
 if __name__ == "__main__":
-        try:
+#        try:
                 pollWebsites()
-        except:
-                msg = separator.join(map(str,sys.exc_info()))
-                print msg
-                if config.receiver != '':
-                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, defaultEncoding, None)
+#        except:
+#                msg = separator.join(map(str,sys.exc_info()))
+#                print msg
+#                if config.receiver != '':
+#                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, defaultEncoding, None)
 
