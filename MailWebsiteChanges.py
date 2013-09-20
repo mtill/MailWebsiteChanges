@@ -2,7 +2,9 @@
 
 import urllib
 from lxml import etree
+from xml.sax.saxutils import escape
 import re
+import StringIO
 
 import smtplib
 from email.mime.text import MIMEText
@@ -87,9 +89,6 @@ def pollWebsites():
                 else:
                         feedXML = etree.parse(StringIO.StringIO(emptyfeed))
 
-        feedParser = etree.XMLParser(recover=True)
-
-
         for site in config.sites:
 
                 fileContent = None
@@ -120,9 +119,6 @@ def pollWebsites():
                                         sendmail(subject, content, (site['xpath'] != ''), site['encoding'], site['uri'])
 
                                 if config.rssfile != '':
-                                        #parser=etree.XMLParser(recover=True, encoding=site['encoding'])
-                                        #contentxml=etree.parse(StringIO.StringIO(content), parser)
-
                                         feeditem = etree.Element('item')
                                         titleitem = etree.Element('title')
                                         titleitem.text = subject
@@ -131,11 +127,8 @@ def pollWebsites():
                                         linkitem.text = site['uri']
                                         feeditem.append(linkitem)
                                         descriptionitem = etree.Element('description')
-
-                                        #if contentxml.getroot() != None:
-                                        #        descriptionitem.append(contentxml.getroot())
-                                        #else:
-                                        descriptionitem.text = subject #etree.tostring(contentxml, method='text')
+                                        print escape(content)
+                                        descriptionitem.text = subject  #escape(content)
 
                                         feeditem.append(descriptionitem)
                                         dateitem = etree.Element('pubDate')
