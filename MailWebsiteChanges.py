@@ -2,7 +2,6 @@
 
 import urllib
 from lxml import etree
-#from xml.sax.saxutils import escape
 import re
 import StringIO
 
@@ -19,9 +18,9 @@ from time import strftime
 
 import config
 
-separator = '\n\n'
+separator = u'\n\n'
 defaultEncoding = 'utf-8'
-emptyfeed = '<rss version="2.0"><channel><title>MailWebsiteChanges Feed</title><link>https://github.com/Debianguru/MailWebsiteChanges</link><description>The MailWebsiteChanges Feed</description></channel></rss>'
+emptyfeed = u'<rss version="2.0"><channel><title>MailWebsiteChanges Feed</title><link>https://github.com/Debianguru/MailWebsiteChanges</link><description>The MailWebsiteChanges Feed</description></channel></rss>'
 
 
 def parseSite(uri, contenttype, xpathquery, regex, enc):
@@ -30,7 +29,7 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
         try:
                 if xpathquery == '':
                         file = urllib.urlopen(uri)
-                        content = file.read()
+                        content = file.read().decode(enc).encode(defaultEncoding)
                         file.close()
                 else:
                         if contenttype == 'xml':
@@ -44,10 +43,10 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
                         if len(result) == 0:
                                 warning = "WARNING: selector became invalid!"
                         else:
-                                content = separator.join([etree.tostring(s, encoding=enc) for s in result])
+                                content = separator.join([etree.tostring(s).decode(enc).encode(defaultEncoding) for s in result])
         except IOError as e:
                 warning = 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e)
-                return content, warning
+                return {'content': content, 'warning': warning}
 
         if regex != '':
                 result = re.findall(r'' + regex, content)
@@ -56,18 +55,18 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
                 else:
                         content = separator.join(result)
 
-        return content, warning
+        return {'content': content, 'warning': warning}
 
 
 def sendmail(subject, content, sendAsHtml, encoding, link):
         if sendAsHtml:
                 if link != None:
-                        content = '<p><a href="' + link + '">' + subject + '</a></p>\n' + content
+                        content = u'<p><a href="' + link + '">' + subject + u'</a></p>\n' + content
                 mail = MIMEText('<html><head><title>' + subject + '</title></head><body>' + content + '</body></html>', 'html', encoding)
         else:
                 if link != None:
-                        content = link + '\n\n' + content
-                mail = MIMEText(content, 'text', encoding)
+                        content = link + u'\n\n' + content
+                mail = MIMEText(content, 'text', defaultEncoding)
 
         mail['From'] = config.sender
         mail['To'] = config.receiver
@@ -95,28 +94,28 @@ def pollWebsites():
 
                 if os.path.isfile(site['shortname'] + '.txt'):
                         file = open(site['shortname'] + '.txt', 'r')
-                        fileContent = file.read()
+                        fileContent = file.read().decode(site['encoding']).encode(defaultEncoding)
                         file.close()
 
 		print 'polling site [' + site['shortname'] + '] ...'
-                content, warning = parseSite(site['uri'], site['type'], site['xpath'], site['regex'], site['encoding'])
+                parseResult = parseSite(site['uri'], site['type'], site['xpath'], site['regex'], site['encoding'])
 
-                if warning:
+                if parseResult['warning']:
                         subject = '[' + site['shortname'] + '] WARNING'
-                        print 'WARNING: ' + warning
+                        print 'WARNING: ' + parseResult['warning']
                         if config.receiver != '':
-                                sendmail(subject, warning, False, defaultEncoding, None)
-                elif content != fileContent:
+                                sendmail(subject, parseResult['warning'], False, defaultEncoding, None)
+                elif parseResult['content'] != fileContent:
                         print '[' + site['shortname'] + '] has been updated.'
 
                         file = open(site['shortname'] + '.txt', 'w')
-                        file.write(content)
+                        file.write(parseResult['content'])
                         file.close()
 
                         if fileContent:
                                 subject = '[' + site['shortname'] + '] ' + config.subjectPostfix
                                 if config.receiver != '':
-                                        sendmail(subject, content, (site['xpath'] != ''), site['encoding'], site['uri'])
+                                        sendmail(subject, parseResult['content'], (site['xpath'] != ''), site['encoding'], site['uri'])
 
                                 if config.rssfile != '':
                                         feeditem = etree.Element('item')
@@ -127,7 +126,7 @@ def pollWebsites():
                                         linkitem.text = site['uri']
                                         feeditem.append(linkitem)
                                         descriptionitem = etree.Element('description')
-                                        descriptionitem.text = subject  #escape(content)
+                                        descriptionitem.text = parseResult['content']
 
                                         feeditem.append(descriptionitem)
                                         dateitem = etree.Element('pubDate')
