@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import urllib
+import urllib2
 from lxml import etree
 import re
 import StringIO
@@ -28,7 +28,7 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
 
         try:
                 if xpathquery == '':
-                        file = urllib.urlopen(uri)
+                        file = urllib2.urlopen(uri)
                         content = file.read().decode(enc).encode(defaultEncoding)
                         file.close()
                 else:
@@ -37,7 +37,9 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
                         else:
                                 parser = etree.HTMLParser(encoding=enc)
 
-                        tree = etree.parse(uri, parser)
+                        file = urllib2.urlopen(uri)
+                        tree = etree.parse(file, parser)
+                        file.close()
                         result = tree.xpath(xpathquery)
 
                         if len(result) == 0:
