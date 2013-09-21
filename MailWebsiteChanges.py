@@ -8,6 +8,7 @@ import StringIO
 import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
+from urlparse import urljoin
 
 import os.path
 import sys
@@ -62,9 +63,11 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
 
 def sendmail(subject, content, sendAsHtml, encoding, link):
         if sendAsHtml:
+                baseurl = ''
                 if link != None:
                         content = u'<p><a href="' + link + '">' + subject + u'</a></p>\n' + content
-                mail = MIMEText('<html><head><title>' + subject + '</title></head><body>' + content + '</body></html>', 'html', encoding)
+                        baseurl = urljoin(link, '/')
+                mail = MIMEText('<html><head><title>' + subject + '</title><base href="' + baseurl + '"></head><body>' + content + '</body></html>', 'html', encoding)
         else:
                 if link != None:
                         content = link + u'\n\n' + content
