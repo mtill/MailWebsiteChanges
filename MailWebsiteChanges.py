@@ -136,6 +136,8 @@ def pollWebsites():
                                         feedXML.xpath('//channel')[0].append(feeditem)
 
         if config.rssfile != '':
+                for o in feedXML.xpath('//channel/item[position()<last()-' + str(config.maxFeeds - 1) + ']'):
+                        o.getparent().remove(o)
                 file = open(config.rssfile, 'w')
                 file.write(etree.tostring(feedXML))
                 file.close()

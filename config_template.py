@@ -37,4 +37,5 @@ receiver = 'me2@mymail.com'
 os.chdir('/path/to/working/directory')
 
 rssfile = 'feed.xml'   # set to '' if you don't want the script to generate a RSS2 feed
+maxFeeds = 100
 
