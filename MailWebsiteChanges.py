@@ -63,11 +63,11 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
 
 def sendmail(subject, content, sendAsHtml, encoding, link):
         if sendAsHtml:
-                baseurl = ''
+                baseurl = None
                 if link != None:
                         content = u'<p><a href="' + link + '">' + subject + u'</a></p>\n' + content
                         baseurl = urljoin(link, '/')
-                mail = MIMEText('<html><head><title>' + subject + '</title><base href="' + baseurl + '"></head><body>' + content + '</body></html>', 'html', encoding)
+                mail = MIMEText('<html><head><title>' + subject + '</title>' + ('<base href="' + baseurl + '">' if baseurl else '') + '</head><body>' + content + '</body></html>', 'html', encoding)
         else:
                 if link != None:
                         content = link + u'\n\n' + content
