@@ -15,7 +15,7 @@ import sys
 
 import time
 from time import strftime
-
+import random
 
 import config
 
@@ -72,9 +72,9 @@ def genFeedItem(subject, content, link, change):
         descriptionitem = etree.Element('description')
         descriptionitem.text = content
         feeditem.append(descriptionitem)
-        #guiditem = etree.Element('guid')
-        #guiditem.text = subject + ' - ' + strftime("%b %d %Y %H:%M:%S", time.localtime()) + ' #' + str(change)
-        #feeditem.append(guiditem)
+        guiditem = etree.Element('guid')
+        guiditem.text = str(random.getrandbits(32)) # subject + ' - ' + strftime("%b %d %Y %H:%M:%S", time.localtime()) + ' #' + str(change)
+        feeditem.append(guiditem)
         dateitem = etree.Element('pubDate')
         dateitem.text = strftime("%a, %d %b %Y %H:%M:%S %Z", time.localtime())
         feeditem.append(dateitem)
