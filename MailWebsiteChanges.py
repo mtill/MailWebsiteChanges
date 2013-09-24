@@ -10,7 +10,7 @@ from email.mime.text import MIMEText
 from email.header import Header
 from urlparse import urljoin
 
-import os.path
+import os
 import sys
 
 import time
@@ -106,6 +106,29 @@ def sendmail(subject, content, sendAsHtml, link):
         s.quit()
 
 
+def getFileContents(shortname):
+        result = []
+        for f in os.listdir('.'):
+                if f.startswith(shortname + '.') and f.endswith('.txt'):
+                        file = open(f, 'r')
+                        result.append(file.read())
+                        file.close()
+        return result
+
+
+def storeFileContents(shortname, parseResult):
+        for f in os.listdir('.'):
+                if f.startswith(shortname + '.') and f.endswith('.txt'):
+                        os.remove(f)
+
+        i = 0
+        for c in parseResult['content']:
+                file = open(shortname + '.' + str(i) + '.txt', 'w')
+                file.write(c)
+                file.close()
+                i += 1
+
+
 def pollWebsites():
 
         if config.rssfile != '':
@@ -127,20 +150,11 @@ def pollWebsites():
                         if config.receiver != '':
                                 sendmail(subject, parseResult['warning'], False, None)
                 else:
-                        i = 0
                         changes = 0
+                        fileContents = getFileContents(site['shortname'])
                         for content in parseResult['content']:
-                                if os.path.isfile(site['shortname'] + '.' + str(i) + '.txt'):
-                                        file = open(site['shortname'] + '.' + str(i) + '.txt', 'r')
-                                        fileContent = file.read()
-                                        file.close()
-
-                                if content != fileContent:
+                                if content not in fileContents:
                                         changes += 1
-
-                                        file = open(site['shortname'] + '.' + str(i) + '.txt', 'w')
-                                        file.write(content)
-                                        file.close()
 
                                         subject = '[' + site['shortname'] + '] ' + config.subjectPostfix
                                         if config.receiver != '':
@@ -149,9 +163,9 @@ def pollWebsites():
                                         if config.rssfile != '':
                                                 feedXML.xpath('//channel')[0].append(genFeedItem(subject, content, site['uri'], changes))
 
-                                i += 1
 
                         if changes > 0:
+                                storeFileContents(site['shortname'], parseResult)
                                 print '        ' + str(changes) + ' updates'
  
 
@@ -164,11 +178,11 @@ def pollWebsites():
 
 
 if __name__ == "__main__":
-        try:
+#        try:
                 pollWebsites()
-        except:
-                msg = '\n\n'.join(map(str,sys.exc_info()))
-                print msg
-                if config.receiver != '':
-                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, None)
+#        except:
+#                msg = '\n\n'.join(map(str,sys.exc_info()))
+#                print msg
+#                if config.receiver != '':
+#                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, None)
 
