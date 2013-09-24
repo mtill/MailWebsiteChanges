@@ -178,11 +178,11 @@ def pollWebsites():
 
 
 if __name__ == "__main__":
-#        try:
+        try:
                 pollWebsites()
-#        except:
-#                msg = '\n\n'.join(map(str,sys.exc_info()))
-#                print msg
-#                if config.receiver != '':
-#                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, None)
+        except:
+                msg = '\n\n'.join(map(str,sys.exc_info()))
+                print msg
+                if config.receiver != '':
+                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, None)
 
