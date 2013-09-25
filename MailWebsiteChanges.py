@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import urllib2
+import urlparse
 from lxml import etree
 import re
 import StringIO
@@ -21,6 +22,16 @@ import config
 
 defaultEncoding = 'utf-8'
 emptyfeed = u'<rss version="2.0"><channel><title>MailWebsiteChanges Feed</title><link>https://github.com/Debianguru/MailWebsiteChanges</link><description>The MailWebsiteChanges Feed</description></channel></rss>'
+uriAttributes = [['//img[@src]', 'src'], ['//a[@href]', 'href']]
+
+
+def toAbsoluteURIs(trees, baseuri):
+        for tree in trees:
+                for uriAttribute in uriAttributes:
+                        tags = tree.xpath(uriAttribute[0])
+                        for tag in tags:
+                                if urlparse.urlparse(tag.attrib[uriAttribute[1]]).scheme == '':
+                                        tag.attrib[uriAttribute[1]] = urlparse.urljoin(baseuri, tag.attrib[uriAttribute[1]])
 
 
 def parseSite(uri, contenttype, xpathquery, regex, enc):
@@ -32,15 +43,20 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
                         content = [file.read().decode(enc).encode(defaultEncoding)]
                         file.close()
                 else:
-                        if contenttype == 'xml':
-                                parser = etree.XMLParser(recover=True, encoding=enc)
-                        else:
+                        baseuri = uri
+                        if contenttype == 'html':
                                 parser = etree.HTMLParser(encoding=enc)
+                        else:
+                                parser = etree.XMLParser(recover=True, encoding=enc)
 
                         file = urllib2.urlopen(uri)
                         tree = etree.parse(file, parser)
                         file.close()
                         result = tree.xpath(xpathquery)
+
+                        if contenttype == 'html' and len(tree.xpath('/html/head/base')) != 0:
+                                baseuri = tree.xpath('/html/head/base')[0].attrib['href']
+                        toAbsoluteURIs(result, baseuri)
 
                         if len(result) == 0:
                                 warning = "WARNING: selector became invalid!"
