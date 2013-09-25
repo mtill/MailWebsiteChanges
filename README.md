@@ -23,7 +23,7 @@ Some examples:
           {'shortname': 'mywebsite2',
            'uri': 'http://www.mywebsite2.com/info',
            'type': 'html',
-           'xpath': '//*[contains(concat(\' \', normalize-space(@class), \' \'), \'news-list-container\')]',
+           'xpath': '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' news-list-container \')]',
            'regex': '',
            'encoding': 'utf-8'},
 
