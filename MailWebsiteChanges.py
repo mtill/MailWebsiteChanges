@@ -158,7 +158,7 @@ def pollWebsites():
                 fileContent = None
 
                 print 'polling site [' + site['shortname'] + '] ...'
-                parseResult = parseSite(site['uri'], site['type'], site['xpath'], site['regex'], site['encoding'])
+                parseResult = parseSite(site['uri'], site.get('type', 'html'), site.get('xpath', ''), site.get('regex', ''), site.get('encoding', defaultEncoding))
 
                 if parseResult['warning']:
                         subject = '[' + site['shortname'] + '] WARNING'
@@ -174,7 +174,7 @@ def pollWebsites():
 
                                         subject = '[' + site['shortname'] + '] ' + config.subjectPostfix
                                         if config.receiver != '':
-                                                sendmail(subject, content, (site['xpath'] != ''), site['uri'])
+                                                sendmail(subject, content, (site.get('xpath', '') != ''), site['uri'])
 
                                         if config.rssfile != '':
                                                 feedXML.xpath('//channel')[0].append(genFeedItem(subject, content, site['uri'], changes))
