@@ -155,8 +155,6 @@ def pollWebsites():
 
         for site in config.sites:
 
-                fileContent = None
-
                 print 'polling site [' + site['shortname'] + '] ...'
                 parseResult = parseSite(site['uri'], site.get('type', 'html'), site.get('xpath', ''), site.get('regex', ''), site.get('encoding', defaultEncoding))
 
