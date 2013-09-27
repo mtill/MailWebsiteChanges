@@ -28,10 +28,11 @@ import os.path
 
 subjectPostfix = 'A website has been updated!'
 sender = 'me@mymail.com'
-smtptlshost = 'mysmtpprovider.com'
-smtptlsport = 587
-smtptlsusername = sender
-smtptlspwd = 'mypassword'
+smtphost = 'mysmtpprovider.com'
+useTLS = True
+smtpport = 587
+smtpusername = sender
+smtppwd = 'mypassword'
 receiver = 'me2@mymail.com'
 
 os.chdir('/path/to/working/directory')
