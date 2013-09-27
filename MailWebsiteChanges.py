@@ -22,7 +22,16 @@ import random
 import config
 
 defaultEncoding = 'utf-8'
-emptyfeed = u'<?xml version="1.0"?>\n<rss version="2.0"><channel><title>MailWebsiteChanges Feed</title><link>https://github.com/Debianguru/MailWebsiteChanges</link><description>The MailWebsiteChanges Feed</description></channel></rss>'
+
+emptyfeed = u"""<?xml version="1.0"?>
+<rss version="2.0">
+ <channel>
+  <title>MailWebsiteChanges Feed</title>
+  <link>https://github.com/Debianguru/MailWebsiteChanges</link>
+  <description>The MailWebsiteChanges Feed</description>
+ </channel>
+</rss>"""
+
 uriAttributes = [['//img[@src]', 'src'], ['//a[@href]', 'href']]
 
 
@@ -64,7 +73,7 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
                         if len(result) == 0:
                                 warning = "WARNING: selector became invalid!"
                         else:
-                                content = [etree.tostring(s).decode(enc).encode(defaultEncoding) for s in result]
+                                content = [etree.tostring(s, pretty_print=True).decode(enc).encode(defaultEncoding) for s in result]
         except IOError as e:
                 warning = 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e)
                 return {'content': content, 'warning': warning}
@@ -191,7 +200,7 @@ def pollWebsites():
                 for o in feedXML.xpath('//channel/item[position()<last()-' + str(config.maxFeeds - 1) + ']'):
                         o.getparent().remove(o)
                 file = open(config.rssfile, 'w')
-                file.write(etree.tostring(feedXML))
+                file.write(etree.tostring(feedXML, pretty_print=True, xml_declaration=True, encoding=defaultEncoding))
                 file.close()
 
 
@@ -199,7 +208,7 @@ if __name__ == "__main__":
         try:
                 pollWebsites()
         except:
-                msg = sys.exc_info()[0] + '\n\n' + traceback.format_exc()
+                msg = str(sys.exc_info()[0]) + '\n\n' + traceback.format_exc()
                 print msg
                 if config.receiver != '':
                         sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, None)
