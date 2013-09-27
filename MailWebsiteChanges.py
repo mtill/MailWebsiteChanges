@@ -30,8 +30,9 @@ def toAbsoluteURIs(trees, baseuri):
                 for uriAttribute in uriAttributes:
                         tags = tree.xpath(uriAttribute[0])
                         for tag in tags:
-                                if urlparse.urlparse(tag.attrib[uriAttribute[1]]).scheme == '':
-                                        tag.attrib[uriAttribute[1]] = urlparse.urljoin(baseuri, tag.attrib[uriAttribute[1]])
+                                if tag.attrib.get(uriAttribute[1]) != None:
+                                        if urlparse.urlparse(tag.attrib[uriAttribute[1]]).scheme == '':
+                                                tag.attrib[uriAttribute[1]] = urlparse.urljoin(baseuri, tag.attrib[uriAttribute[1]])
 
 
 def parseSite(uri, contenttype, xpathquery, regex, enc):
@@ -56,7 +57,7 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
 
                         if contenttype == 'html' and len(tree.xpath('/html/head/base')) != 0:
                                 baseuri = tree.xpath('/html/head/base')[0].attrib['href']
-                        toAbsoluteURIs(result, baseuri)
+                                toAbsoluteURIs(result, baseuri)
 
                         if len(result) == 0:
                                 warning = "WARNING: selector became invalid!"
