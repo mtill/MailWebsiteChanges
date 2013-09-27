@@ -114,10 +114,11 @@ def sendmail(subject, content, sendAsHtml, link):
         mail['To'] = config.receiver
         mail['Subject'] = Header(subject, defaultEncoding)
 
-        s = smtplib.SMTP(config.smtptlshost, config.smtptlsport)
-        s.ehlo()
-        s.starttls()
-        s.login(config.smtptlsusername, config.smtptlspwd)
+        s = smtplib.SMTP(config.smtphost, config.smtpport)
+        if config.useTLS:
+                s.ehlo()
+                s.starttls()
+        s.login(config.smtpusername, config.smtppwd)
         s.sendmail(config.sender, config.receiver, mail.as_string())
         s.quit()
 
