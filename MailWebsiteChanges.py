@@ -12,7 +12,7 @@ from email.header import Header
 from urlparse import urljoin
 
 import os
-import sys
+import traceback
 
 import time
 from time import strftime
@@ -196,7 +196,7 @@ if __name__ == "__main__":
         try:
                 pollWebsites()
         except:
-                msg = '\n\n'.join(map(str,sys.exc_info()))
+                msg = traceback.format_exc()
                 print msg
                 if config.receiver != '':
                         sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, None)
