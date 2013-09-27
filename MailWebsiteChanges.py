@@ -55,8 +55,9 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
                         file.close()
                         result = tree.xpath(xpathquery)
 
-                        if contenttype == 'html' and len(tree.xpath('/html/head/base')) != 0:
-                                baseuri = tree.xpath('/html/head/base')[0].attrib['href']
+                        if contenttype == 'html':
+                                if len(tree.xpath('/html/head/base')) != 0:
+                                        baseuri = tree.xpath('/html/head/base')[0].attrib['href']
                                 toAbsoluteURIs(result, baseuri)
 
                         if len(result) == 0:
