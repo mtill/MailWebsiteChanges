@@ -12,6 +12,7 @@ from email.header import Header
 from urlparse import urljoin
 
 import os
+import sys
 import traceback
 
 import time
@@ -21,7 +22,7 @@ import random
 import config
 
 defaultEncoding = 'utf-8'
-emptyfeed = u'<rss version="2.0"><channel><title>MailWebsiteChanges Feed</title><link>https://github.com/Debianguru/MailWebsiteChanges</link><description>The MailWebsiteChanges Feed</description></channel></rss>'
+emptyfeed = u'<?xml version="1.0"?>\n<rss version="2.0"><channel><title>MailWebsiteChanges Feed</title><link>https://github.com/Debianguru/MailWebsiteChanges</link><description>The MailWebsiteChanges Feed</description></channel></rss>'
 uriAttributes = [['//img[@src]', 'src'], ['//a[@href]', 'href']]
 
 
@@ -175,7 +176,7 @@ def pollWebsites():
 
                                         subject = '[' + site['shortname'] + '] ' + config.subjectPostfix
                                         if config.receiver != '':
-                                                sendmail(subject, content, (site.get('xpath', '') != ''), site['uri'])
+                                                sendmail(subject, content, (site.get('type', 'html') == 'html'), site['uri'])
 
                                         if config.rssfile != '':
                                                 feedXML.xpath('//channel')[0].append(genFeedItem(subject, content, site['uri'], changes))
@@ -198,7 +199,7 @@ if __name__ == "__main__":
         try:
                 pollWebsites()
         except:
-                msg = traceback.format_exc()
+                msg = sys.exc_info()[0] + '\n\n' + traceback.format_exc()
                 print msg
                 if config.receiver != '':
                         sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, None)
