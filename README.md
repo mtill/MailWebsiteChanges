@@ -54,11 +54,11 @@ Some examples:
 <em>SelectorTest.py</em> might be useful in order to test the definitions before integrating them into the config file.
 
 If you would like to keep the data stored in a different place than the working directory, you can include something like this:
-<code>
- <pre>
+<pre>
+ <code>
   os.chdir('/path/to/working/directory')
- </pre>
-</code>
+ </code>
+</pre>
 
 ### Mail settings
 <pre>
