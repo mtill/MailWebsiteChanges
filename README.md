@@ -56,7 +56,7 @@ Some examples:
 If you would like to keep the data stored in a different place than the working directory, you can include something like this:
 <pre>
  <code>
-  os.chdir('/path/to/working/directory')
+  os.chdir('/path/to/data/directory')
  </code>
 </pre>
 
