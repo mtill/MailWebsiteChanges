@@ -32,7 +32,7 @@ emptyfeed = u"""<?xml version="1.0"?>
  </channel>
 </rss>"""
 
-uriAttributes = [['//iimg[@src]', 'src'], ['//a[@href]', 'href']]
+uriAttributes = [['//img[@src]', 'src'], ['//a[@href]', 'href']]
 
 
 def toAbsoluteURIs(trees, baseuri):
