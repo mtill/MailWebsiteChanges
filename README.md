@@ -53,10 +53,18 @@ Some examples:
 
 <em>SelectorTest.py</em> might be useful in order to test the definitions before integrating them into the config file.
 
+If you would like to keep the data stored in a different place than the working directory, you can include something like this:
+<code>
+ <pre>
+  os.chdir('/path/to/working/directory')
+ </pre>
+</code>
+
 ### Mail settings
 <pre>
 <code>
  enableMailNotifications = True
+
  subjectPostfix = 'A website has been updated!'
  sender = 'me@mymail.com'
  smtphost = 'mysmtpprovider.com'
@@ -65,8 +73,6 @@ Some examples:
  smtpusername = sender
  smtppwd = 'mypassword'
  receiver = 'me2@mymail.com'
-
- os.chdir('/path/to/working/directory')
 </code>
 </pre>
 
@@ -79,6 +85,7 @@ If you prefer to use the RSS feature, you just have to specify the path of the f
 <pre>
  <code>
   enableRSSFeed = True
+
   rssfile = 'feed.xml'
   maxFeeds = 100
  </code>
