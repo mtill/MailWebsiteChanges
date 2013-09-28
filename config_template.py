@@ -27,6 +27,8 @@ import os.path
          ]
 
 subjectPostfix = 'A website has been updated!'
+
+enableMailNotifications = True
 sender = 'me@mymail.com'
 smtphost = 'mysmtpprovider.com'
 useTLS = True
@@ -37,6 +39,7 @@ receiver = 'me2@mymail.com'
 
 os.chdir('/path/to/working/directory')
 
+enableRSSFeed = True
 rssfile = 'feed.xml'   # set to '' if you don't want the script to generate a RSS2 feed
 maxFeeds = 100
 

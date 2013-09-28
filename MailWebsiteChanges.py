@@ -32,7 +32,7 @@ emptyfeed = u"""<?xml version="1.0"?>
  </channel>
 </rss>"""
 
-uriAttributes = [['//img[@src]', 'src'], ['//a[@href]', 'href']]
+uriAttributes = [['//iimg[@src]', 'src'], ['//a[@href]', 'href']]
 
 
 def toAbsoluteURIs(trees, baseuri):
@@ -78,7 +78,7 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
                 warning = 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e)
                 return {'content': content, 'warning': warning}
 
-        if regex != '':
+        if regex != '' and content != None:
                 newcontent = []
                 for c in content:
                         newcontent.extend(re.findall(r'' + regex, c))
@@ -160,7 +160,7 @@ def storeFileContents(shortname, parseResult):
 
 def pollWebsites():
 
-        if config.rssfile != '':
+        if config.enableRSSFeed:
                 if os.path.isfile(config.rssfile):
                         feedXML = etree.parse(config.rssfile)
                 else:
@@ -174,8 +174,10 @@ def pollWebsites():
                 if parseResult['warning']:
                         subject = '[' + site['shortname'] + '] WARNING'
                         print 'WARNING: ' + parseResult['warning']
-                        if config.receiver != '':
+                        if config.enableMailNotifications:
                                 sendmail(subject, parseResult['warning'], False, None)
+                        if config.enableRSSFeed:
+                                feedXML.xpath('//channel')[0].append(genFeedItem(subject, parseResult['warning'], site['uri'], changes))
                 else:
                         changes = 0
                         fileContents = getFileContents(site['shortname'])
@@ -184,10 +186,10 @@ def pollWebsites():
                                         changes += 1
 
                                         subject = '[' + site['shortname'] + '] ' + config.subjectPostfix
-                                        if config.receiver != '':
+                                        if config.enableMailNotifications:
                                                 sendmail(subject, content, (site.get('type', 'html') == 'html'), site['uri'])
 
-                                        if config.rssfile != '':
+                                        if config.enableRSSFeed:
                                                 feedXML.xpath('//channel')[0].append(genFeedItem(subject, content, site['uri'], changes))
 
 
@@ -196,7 +198,7 @@ def pollWebsites():
                                 print '        ' + str(changes) + ' updates'
  
 
-        if config.rssfile != '':
+        if config.enableRSSFeed:
                 for o in feedXML.xpath('//channel/item[position()<last()-' + str(config.maxFeeds - 1) + ']'):
                         o.getparent().remove(o)
                 file = open(config.rssfile, 'w')
