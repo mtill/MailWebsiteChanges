@@ -56,6 +56,7 @@ Some examples:
 ### Mail settings
 <pre>
 <code>
+ enableMailNotifications = True
  subjectPostfix = 'A website has been updated!'
  sender = 'me@mymail.com'
  smtphost = 'mysmtpprovider.com'
@@ -77,6 +78,7 @@ If you prefer to use the RSS feature, you just have to specify the path of the f
 
 <pre>
  <code>
+  enableRSSFeed = True
   rssfile = 'feed.xml'
   maxFeeds = 100
  </code>
