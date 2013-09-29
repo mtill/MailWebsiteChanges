@@ -51,7 +51,7 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
         try:
                 if xpathquery == '':
                         file = urllib.request.urlopen(uri)
-                        content = [file.read().decode(enc).encode(defaultEncoding)]
+                        content = [file.read().decode(enc)]
                         file.close()
                 else:
                         baseuri = uri
@@ -73,7 +73,7 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
                         if len(result) == 0:
                                 warning = "WARNING: selector became invalid!"
                         else:
-                                content = [etree.tostring(s, pretty_print=True).decode(enc).encode(defaultEncoding) for s in result]
+                                content = [etree.tostring(s, pretty_print=True).decode(enc) for s in result]
         except IOError as e:
                 warning = 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e)
                 return {'content': content, 'warning': warning}
@@ -202,7 +202,7 @@ def pollWebsites():
                 for o in feedXML.xpath('//channel/item[position()<last()-' + str(config.maxFeeds - 1) + ']'):
                         o.getparent().remove(o)
                 file = open(config.rssfile, 'w')
-                file.write(etree.tostring(feedXML, pretty_print=True, xml_declaration=True, encoding=defaultEncoding))
+                file.write(str(etree.tostring(feedXML, pretty_print=True, xml_declaration=True, encoding=defaultEncoding)))
                 file.close()
 
 
