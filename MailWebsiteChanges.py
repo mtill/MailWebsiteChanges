@@ -13,6 +13,7 @@ from urllib.parse import urljoin
 
 import os
 import sys
+import getopt
 import traceback
 
 import time
@@ -210,8 +211,19 @@ def pollWebsites():
 if __name__ == "__main__":
 
         configMod = 'config'
-        if (len(sys.argv) > 1):
-                configMod = sys.argv[1]
+
+        try:
+                opts, args = getopt.getopt(sys.argv[1:], 'hc:', ['help', 'config='])
+        except getopt.GetoptError:
+                print('Usage: MailWebsiteChanges.py --config=config')
+                sys.exit(1)
+        for opt, arg in opts:
+                if opt == '-h':
+                        print('Usage: MailWebsiteChanges.py --config=config')
+                        exit()
+                elif opt in ('c', '--config'):
+                        configMod = arg
+
         config = importlib.import_module(configMod)
 
         try:
