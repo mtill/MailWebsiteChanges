@@ -96,7 +96,7 @@ maxFeeds = 100
 To setup a job that periodically runs the script, simply attach something like this to your /etc/crontab:
 <pre>
  <code>
-  0 8-22/2    * * *   root	/usr/bin/python /path/to/MailWebsiteChanges/MailWebsiteChanges.py
+0 8-22/2    * * *   root	/usr/bin/python3 /path/to/MailWebsiteChanges/MailWebsiteChanges.py
  </code>
 </pre>
 This will run the script every two hours between 8am and 10pm.
