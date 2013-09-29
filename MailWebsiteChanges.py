@@ -19,7 +19,8 @@ import time
 from time import strftime
 import random
 
-import config
+import importlib
+config = None
 
 defaultEncoding = 'utf-8'
 
@@ -207,6 +208,12 @@ def pollWebsites():
 
 
 if __name__ == "__main__":
+
+        configMod = 'config'
+        if (len(sys.argv) > 1):
+                configMod = sys.argv[1]
+        config = importlib.import_module(configMod)
+
         try:
                 pollWebsites()
         except:
