@@ -178,7 +178,7 @@ def pollWebsites():
                         if config.enableMailNotifications:
                                 sendmail(subject, parseResult['warning'], False, None)
                         if config.enableRSSFeed:
-                                feedXML.xpath('//channel')[0].append(genFeedItem(subject, parseResult['warning'], site['uri'], changes))
+                                feedXML.xpath('//channel')[0].append(genFeedItem(subject, parseResult['warning'], site['uri'], 0))
                 else:
                         changes = 0
                         fileContents = getFileContents(site['shortname'])
