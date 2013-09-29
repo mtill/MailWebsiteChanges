@@ -1,15 +1,15 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
-import urllib2
-import urlparse
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 from lxml import etree
 import re
-import StringIO
+import io
 
 import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 import os
 import sys
@@ -23,7 +23,7 @@ import config
 
 defaultEncoding = 'utf-8'
 
-emptyfeed = u"""<?xml version="1.0"?>
+emptyfeed = """<?xml version="1.0"?>
 <rss version="2.0">
  <channel>
   <title>MailWebsiteChanges Feed</title>
@@ -41,8 +41,8 @@ def toAbsoluteURIs(trees, baseuri):
                         tags = tree.xpath(uriAttribute[0])
                         for tag in tags:
                                 if tag.attrib.get(uriAttribute[1]) != None:
-                                        if urlparse.urlparse(tag.attrib[uriAttribute[1]]).scheme == '':
-                                                tag.attrib[uriAttribute[1]] = urlparse.urljoin(baseuri, tag.attrib[uriAttribute[1]])
+                                        if urllib.parse.urlparse(tag.attrib[uriAttribute[1]]).scheme == '':
+                                                tag.attrib[uriAttribute[1]] = urllib.parse.urljoin(baseuri, tag.attrib[uriAttribute[1]])
 
 
 def parseSite(uri, contenttype, xpathquery, regex, enc):
@@ -50,7 +50,7 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
 
         try:
                 if xpathquery == '':
-                        file = urllib2.urlopen(uri)
+                        file = urllib.request.urlopen(uri)
                         content = [file.read().decode(enc).encode(defaultEncoding)]
                         file.close()
                 else:
@@ -60,7 +60,7 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
                         else:
                                 parser = etree.XMLParser(recover=True, encoding=enc)
 
-                        file = urllib2.urlopen(uri)
+                        file = urllib.request.urlopen(uri)
                         tree = etree.parse(file, parser)
                         file.close()
                         result = tree.xpath(xpathquery)
@@ -101,7 +101,7 @@ def genFeedItem(subject, content, link, change):
         descriptionitem.text = content
         feeditem.append(descriptionitem)
         guiditem = etree.Element('guid')
-        guiditem.text = str(random.getrandbits(32)) # subject + ' - ' + strftime("%b %d %Y %H:%M:%S", time.localtime()) + ' #' + str(change)
+        guiditem.text = str(random.getrandbits(32))
         feeditem.append(guiditem)
         dateitem = etree.Element('pubDate')
         dateitem.text = strftime("%a, %d %b %Y %H:%M:%S %Z", time.localtime())
@@ -114,12 +114,12 @@ def sendmail(subject, content, sendAsHtml, link):
         if sendAsHtml:
                 baseurl = None
                 if link != None:
-                        content = u'<p><a href="' + link + '">' + subject + u'</a></p>\n' + content
+                        content = '<p><a href="' + link + '">' + subject + '</a></p>\n' + content
                         baseurl = urljoin(link, '/')
                 mail = MIMEText('<html><head><title>' + subject + '</title>' + ('<base href="' + baseurl + '">' if baseurl else '') + '</head><body>' + content + '</body></html>', 'html', defaultEncoding)
         else:
                 if link != None:
-                        content = link + u'\n\n' + content
+                        content = link + '\n\n' + content
                 mail = MIMEText(content, 'text', defaultEncoding)
 
         mail['From'] = config.sender
@@ -164,16 +164,16 @@ def pollWebsites():
                 if os.path.isfile(config.rssfile):
                         feedXML = etree.parse(config.rssfile)
                 else:
-                        feedXML = etree.parse(StringIO.StringIO(emptyfeed))
+                        feedXML = etree.parse(io.StringIO(emptyfeed))
 
         for site in config.sites:
 
-                print 'polling site [' + site['shortname'] + '] ...'
+                print('polling site [' + site['shortname'] + '] ...')
                 parseResult = parseSite(site['uri'], site.get('type', 'html'), site.get('xpath', ''), site.get('regex', ''), site.get('encoding', defaultEncoding))
 
                 if parseResult['warning']:
                         subject = '[' + site['shortname'] + '] WARNING'
-                        print 'WARNING: ' + parseResult['warning']
+                        print('WARNING: ' + parseResult['warning'])
                         if config.enableMailNotifications:
                                 sendmail(subject, parseResult['warning'], False, None)
                         if config.enableRSSFeed:
@@ -195,7 +195,7 @@ def pollWebsites():
 
                         if changes > 0:
                                 storeFileContents(site['shortname'], parseResult)
-                                print '        ' + str(changes) + ' updates'
+                                print('        ' + str(changes) + ' updates')
  
 
         if config.enableRSSFeed:
@@ -211,7 +211,7 @@ if __name__ == "__main__":
                 pollWebsites()
         except:
                 msg = str(sys.exc_info()[0]) + '\n\n' + traceback.format_exc()
-                print msg
+                print(msg)
                 if config.receiver != '':
                         sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, None)
 

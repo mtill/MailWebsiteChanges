@@ -1,15 +1,15 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import config
-import SimpleHTTPServer
-import SocketServer
+import http.server
+import socketserver
 
 port = 8000
 
-handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+handler = http.server.SimpleHTTPRequestHandler
 
-httpd = SocketServer.TCPServer(('', port), handler)
+httpd = socketserver.TCPServer(('', port), handler)
 
-print 'Listening on port ' + str(port)
+print('Listening on port ' + str(port))
 httpd.serve_forever()
 
