@@ -108,5 +108,5 @@ If you prefer invoking the script with an alternate configuration files, simply 
 
 
 ## Requirements
-Requires <a href="http://lxml.de/">lxml</a> (for Debian/Ubuntu, use <code>apt-get install python3 python3-lxml</code>).
+Requires Python 3 and <a href="http://lxml.de/">lxml</a> (for Debian/Ubuntu, use <code>apt-get install python3 python3-lxml</code>).
 
