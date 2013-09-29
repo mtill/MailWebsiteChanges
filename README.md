@@ -104,9 +104,9 @@ To setup a job that periodically runs the script, simply attach something like t
 </pre>
 This will run the script every two hours between 8am and 10pm.
 
-If you prefer to invoke the script with different configuration files, simply pass the name of the configuration file as an argument, e.g., for <code>my_alternate_config.py</code>, use <code>python3 MailWebsiteChanges my_alternate_config</code>.
+If you prefer invoking the script with an alternate configuration files, simply pass the name of the configuration file as an argument, e.g., for <code>my_alternate_config.py</code>, use <code>python3 MailWebsiteChanges my_alternate_config</code>.
 
 
 ## Requirements
-Requires <a href="http://lxml.de/">lxml</a>.
+Requires <a href="http://lxml.de/">lxml</a> (for Debian/Ubuntu, use <code>apt-get install python3 python3-lxml</code>).
 
