@@ -1,7 +1,6 @@
 import os.path
 
-# remember to rename this file to "config.py"
- sites = [
+sites = [
 
           {'shortname': 'mywebsite1',
            'uri': 'http://www.mywebsite1.com/info',
@@ -24,7 +23,7 @@ import os.path
            'regex': 'Version\"\:\d*\.\d*',
            'encoding': 'utf-8'}
 
-         ]
+]
 
 subjectPostfix = 'A website has been updated!'
 
@@ -37,9 +36,9 @@ smtpusername = sender
 smtppwd = 'mypassword'
 receiver = 'me2@mymail.com'
 
-os.chdir('/path/to/working/directory')
+os.chdir('/path/to/data/directory')
 
 enableRSSFeed = True
-rssfile = 'feed.xml'   # set to '' if you don't want the script to generate a RSS2 feed
+rssfile = 'feed.xml'
 maxFeeds = 100
 

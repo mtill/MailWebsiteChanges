@@ -11,7 +11,7 @@ Some examples:
 ### Website definitions
 <pre>
 <code>
- sites = [
+sites = [
 
           {'shortname': 'mywebsite1',
            'uri': 'http://www.mywebsite1.com/info',
@@ -34,7 +34,7 @@ Some examples:
            'regex': 'Version\"\:\d*\.\d*',
            'encoding': 'utf-8'}
 
-         ]
+]
 </code>
 </pre>
 
@@ -56,23 +56,23 @@ Some examples:
 If you would like to keep the data stored in a different place than the working directory, you can include something like this:
 <pre>
  <code>
-  os.chdir('/path/to/data/directory')
+os.chdir('/path/to/data/directory')
  </code>
 </pre>
 
 ### Mail settings
 <pre>
 <code>
- enableMailNotifications = True
+enableMailNotifications = True
+subjectPostfix = 'A website has been updated!'
 
- subjectPostfix = 'A website has been updated!'
- sender = 'me@mymail.com'
- smtphost = 'mysmtpprovider.com'
- useTLS = True
- smtpport = 587
- smtpusername = sender
- smtppwd = 'mypassword'
- receiver = 'me2@mymail.com'
+sender = 'me@mymail.com'
+smtphost = 'mysmtpprovider.com'
+useTLS = True
+smtpport = 587
+smtpusername = sender
+smtppwd = 'mypassword'
+receiver = 'me2@mymail.com'
 </code>
 </pre>
 
@@ -84,10 +84,10 @@ If you prefer to use the RSS feature, you just have to specify the path of the f
 
 <pre>
  <code>
-  enableRSSFeed = True
+enableRSSFeed = True
 
-  rssfile = 'feed.xml'
-  maxFeeds = 100
+rssfile = 'feed.xml'
+maxFeeds = 100
  </code>
 </pre>
 
