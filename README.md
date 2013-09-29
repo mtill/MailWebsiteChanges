@@ -4,6 +4,9 @@ Python script to keep track of website changes; sends email notifications on upd
 
 To specify which parts of a website should be monitored, <b>both XPath selectors</b> (e.g. "//h1") <b>and regular expressions can be used</b>.
 
+<i>This is Open Source -- so please contribute eagerly! ;-)</i>
+
+
 ## Configuration
 Configuration can be done by creating a <code>config.py</code> file (just place this file in the program folder):
 Some examples:
