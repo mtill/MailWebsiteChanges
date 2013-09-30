@@ -24,6 +24,7 @@ import importlib
 config = None
 
 defaultEncoding = 'utf-8'
+maxTitleLength = 150
 
 emptyfeed = """<?xml version="1.0"?>
 <rss version="2.0">
@@ -48,7 +49,7 @@ def toAbsoluteURIs(trees, baseuri):
 
 
 def parseSite(uri, contenttype, xpathquery, regex, enc):
-        content, warning = None, None
+        content, titles, warning = None, None, None
 
         try:
                 if xpathquery == '':
@@ -75,20 +76,31 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
                         if len(result) == 0:
                                 warning = "WARNING: selector became invalid!"
                         else:
-                                content = [etree.tostring(s, pretty_print=True).decode(enc) for s in result]
+                                content = [etree.tostring(s, encoding=defaultEncoding, pretty_print=True).decode(defaultEncoding) for s in result]
+                                titles = [getSubject(etree.tostring(s, encoding=defaultEncoding, method='text').decode(defaultEncoding)) for s in result]
         except IOError as e:
                 warning = 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e)
                 return {'content': content, 'warning': warning}
 
         if regex != '' and content != None:
                 newcontent = []
+                titles = []
                 for c in content:
-                        newcontent.extend(re.findall(r'' + regex, c))
+                        for s in re.findall(r'' + regex, c):
+                                newcontent.append(s)
+                                titles.append(s[:maxTitleLength])
                 content = newcontent
                 if len(content) == 0:
                         warning = "WARNING: regex became invalid!"
 
-        return {'content': content, 'warning': warning}
+        return {'content': content, 'titles': titles, 'warning': warning}
+
+
+def getSubject(textContent):
+        if textContent == None or textContent == '':
+                return config.subjectPostfix
+        textContent = re.sub(' +', ' ', re.sub('\s', ' ', textContent)).strip()
+        return (textContent[:maxTitleLength] + ' [..]') if len(textContent) > maxTitleLength else textContent
 
 
 def genFeedItem(subject, content, link, change):
@@ -183,16 +195,19 @@ def pollWebsites():
                 else:
                         changes = 0
                         fileContents = getFileContents(site['shortname'])
+                        i = 0
                         for content in parseResult['content']:
                                 if content not in fileContents:
                                         changes += 1
 
-                                        subject = '[' + site['shortname'] + '] ' + config.subjectPostfix
+                                        subject = '[' + site['shortname'] + '] ' + parseResult['titles'][i]
+                                        print('    ' + subject)
                                         if config.enableMailNotifications:
                                                 sendmail(subject, content, (site.get('type', 'html') == 'html'), site['uri'])
 
                                         if config.enableRSSFeed:
                                                 feedXML.xpath('//channel')[0].append(genFeedItem(subject, content, site['uri'], changes))
+                                i += 1
 
 
                         if changes > 0:
