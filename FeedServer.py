@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-import config
 import http.server
 import socketserver
 import importlib
