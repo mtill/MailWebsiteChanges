@@ -19,7 +19,7 @@ for opt, arg in opts:
         if opt == '-h':
                 print('Usage: FeedServer.py --config=config --port=8000')
                 exit()
-        elif opt in ('c', '--config'):
+        elif opt in ('-c', '--config'):
                 configMod = arg
         elif opt in ('-p', '--port'):
                 port = int(arg)

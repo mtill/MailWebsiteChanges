@@ -236,7 +236,7 @@ if __name__ == "__main__":
                 if opt == '-h':
                         print('Usage: MailWebsiteChanges.py --config=config')
                         exit()
-                elif opt in ('c', '--config'):
+                elif opt in ('-c', '--config'):
                         configMod = arg
 
         config = importlib.import_module(configMod)
