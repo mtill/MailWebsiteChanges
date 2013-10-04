@@ -48,7 +48,7 @@ def toAbsoluteURIs(trees, baseuri):
                                                 tag.attrib[uriAttribute[1]] = urllib.parse.urljoin(baseuri, tag.attrib[uriAttribute[1]])
 
 
-def parseSite(uri, contenttype, xpathquery, regex, enc):
+def parseSite(uri, contenttype, xpathquery, feedxpathquery, regex, enc):
         content, titles, warning = None, None, None
 
         try:
@@ -69,15 +69,29 @@ def parseSite(uri, contenttype, xpathquery, regex, enc):
                         result = tree.xpath(xpathquery)
 
                         if contenttype == 'html':
-                                if len(tree.xpath('/html/head/base')) != 0:
-                                        baseuri = tree.xpath('/html/head/base')[0].attrib['href']
+                                basetaglist = tree.xpath('/html/head/base')
+                                if len(basetaglist) != 0:
+                                        baseuri = basetaglist[0].attrib['href']
                                 toAbsoluteURIs(result, baseuri)
 
                         if len(result) == 0:
                                 warning = "WARNING: selector became invalid!"
                         else:
-                                content = [etree.tostring(s, encoding=defaultEncoding, pretty_print=True).decode(defaultEncoding) for s in result]
-                                titles = [getSubject(etree.tostring(s, encoding=defaultEncoding, method='text').decode(defaultEncoding)) for s in result]
+                                if feedxpathquery == '':
+                                        content = [etree.tostring(s, encoding=defaultEncoding, pretty_print=True).decode(defaultEncoding) for s in result]
+                                        titles = [getSubject(etree.tostring(s, encoding=defaultEncoding, method='text').decode(defaultEncoding)) for s in result]
+                                else:
+                                        content = []
+                                        titles = []
+                                        for r in result:
+                                                feedxpathresult = r.xpath(feedxpathquery)
+                                                if len(feedxpathresult) == 0:
+                                                        warning = "WARNING: feed selector became invalid!"
+                                                        break
+                                                else:
+                                                        content.append('\n'.join([etree.tostring(x, encoding=defaultEncoding, pretty_print=True).decode(defaultEncoding) for x in feedxpathresult]))
+                                                        titles.append(getSubject('\n'.join([etree.tostring(x, encoding=defaultEncoding, method='text').decode(defaultEncoding) for x in feedxpathresult])))
+
         except IOError as e:
                 warning = 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e)
                 return {'content': content, 'warning': warning}
@@ -183,7 +197,7 @@ def pollWebsites():
         for site in config.sites:
 
                 print('polling site [' + site['shortname'] + '] ...')
-                parseResult = parseSite(site['uri'], site.get('type', 'html'), site.get('xpath', ''), site.get('regex', ''), site.get('encoding', defaultEncoding))
+                parseResult = parseSite(site['uri'], site.get('type', 'html'), site.get('xpath', ''), site.get('feedxpath', ''), site.get('regex', ''), site.get('encoding', defaultEncoding))
 
                 if parseResult['warning']:
                         subject = '[' + site['shortname'] + '] WARNING'
