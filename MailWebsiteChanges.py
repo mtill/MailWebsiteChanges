@@ -68,8 +68,8 @@ def parseSite(uri, contenttype, contentxpath, titlexpath, contentregex, titlereg
                         tree = etree.parse(file, parser)
                         file.close()
 
-                        contentresult = [] if contentxpath == '' else tree.xpath(contentxpath)
-                        titleresult = [] if titlexpath == '' else tree.xpath(titlexpath)
+                        contentresult = tree.xpath(contentxpath) if contentxpath else []
+                        titleresult = tree.xpath(titlexpath) if titlexpath else []
 
                         if contenttype == 'html':
                                 basetaglist = tree.xpath('/html/head/base')
@@ -81,10 +81,10 @@ def parseSite(uri, contenttype, contentxpath, titlexpath, contentregex, titlereg
                                     toAbsoluteURIs(titleresult, baseuri)
 
                         if contentxpath != '' and titlexpath != '' and len(contentresult) != len(titleresult):
-                                warning = 'WARNING: number of title blocks (' + len(titleresult) + ') does not match number of content blocks (' + len(contentresult) + ')'
-                        elif contentxpath != '' and len(contentresult) == 0:
+                                warning = 'WARNING: number of title blocks (' + str(len(titleresult)) + ') does not match number of content blocks (' + str(len(contentresult)) + ')'
+                        elif contentxpath and len(contentresult) == 0:
                                 warning = 'WARNING: content selector became invalid!'
-                        elif titlexpath != '' and len(titleresult) == 0:
+                        elif titlexpath and len(titleresult) == 0:
                                 warning = 'WARNING: title selector became invalid!'
                         else:
                                 if len(contentresult) == 0:
@@ -92,29 +92,31 @@ def parseSite(uri, contenttype, contentxpath, titlexpath, contentregex, titlereg
                                 if len(titleresult) == 0:
                                         titleresult = contentresult
 
-                                contents = [etree.tostring(s, encoding=defaultEncoding, pretty_print=True).decode(defaultEncoding) for s in contentresult]
-                                titles = [getSubject(etree.tostring(s, encoding=defaultEncoding, method='text').decode(defaultEncoding)) for s in titleresult]
+                        contents = [etree.tostring(s, encoding=defaultEncoding, pretty_print=True).decode(defaultEncoding) for s in contentresult]
+                        titles = [getSubject(etree.tostring(s, encoding=defaultEncoding, method='text').decode(defaultEncoding)) for s in titleresult]
 
         except IOError as e:
                 warning = 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e)
-                return {'content': content, 'warning': warning}
 
-        if contentregex != '':
+        if warning:
+                return {'content': content, 'titles': titles, 'warning': warning}
+
+        if contentregex:
                 contents = [x for y in [re.findall(r'' + contentregex, c) for c in contents] for x in y]
-        if titleregex != '':
+        if titleregex:
                 titles = [x for y in [re.findall(r'' + titleregex, c) for c in titles] for x in y]
 
-        if contentregex != '' and titleregex != '' and len(contents) != len(titles):
-                warning = 'WARNING: number of title blocks (' + len(titles) + ') does not match number of content blocks (' + len(contents) + ') after regex'
-        elif contentregex != '' and len(contents) == 0:
+        if contentregex and titleregex and len(contents) != len(titles):
+                warning = 'WARNING: number of title blocks (' + str(len(titles)) + ') does not match number of content blocks (' + str(len(contents)) + ') after regex'
+        elif contentregex and len(contents) == 0:
                 warning = 'WARNING: content regex became invalid!'
-        elif titleregex != '' and len(titles) == 0:
+        elif titleregex and len(titles) == 0:
                 warning = 'WARNING: title regex became invalid!'
         else:
                 if len(contents) == 0:
                         contents = titles
                 if len(titles) == 0:
-                        titles = contents
+                        titles = [getSubject(c) for c in contents]
 
         return {'contents': contents, 'titles': titles, 'warning': warning}
 
