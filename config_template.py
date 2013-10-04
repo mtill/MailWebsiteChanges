@@ -5,22 +5,24 @@ sites = [
           {'shortname': 'mywebsite1',
            'uri': 'http://www.mywebsite1.com/info',
            'type': 'html',
-           'xpath': '//h1',
-           'regex': '',
+           'titlexpath': '//h1',
+           'contentxpath': '//div',
+           'titleregex': '',
+           'contentregex': '',
            'encoding': 'utf-8'},
 
           {'shortname': 'mywebsite2',
            'uri': 'http://www.mywebsite2.com/info',
            'type': 'html',
-           'xpath': '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' news-list-container \')]',
+           'contentxpath': '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' news-list-container \')]',
            'regex': '',
            'encoding': 'utf-8'},
 
           {'shortname': 'mywebsite3',
            'uri': 'http://www.mywebsite3.com/info',
            'type': 'text',
-           'xpath': '',
-           'regex': 'Version\"\:\d*\.\d*',
+           'contentxpath': '',
+           'contentregex': 'Version\"\:\d*\.\d*',
            'encoding': 'utf-8'}
 
 ]

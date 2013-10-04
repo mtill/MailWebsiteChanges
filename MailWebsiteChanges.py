@@ -48,13 +48,14 @@ def toAbsoluteURIs(trees, baseuri):
                                                 tag.attrib[uriAttribute[1]] = urllib.parse.urljoin(baseuri, tag.attrib[uriAttribute[1]])
 
 
-def parseSite(uri, contenttype, xpathquery, feedxpathquery, regex, enc):
+def parseSite(uri, contenttype, contentxpath, titlexpath, contentregex, titleregex, enc):
         content, titles, warning = None, None, None
 
         try:
-                if xpathquery == '':
+                if contentxpath == '' and titlexpath == '':
                         file = urllib.request.urlopen(uri)
-                        content = [file.read().decode(enc)]
+                        contents = [file.read().decode(enc)]
+                        titles = []
                         file.close()
                 else:
                         baseuri = uri
@@ -66,48 +67,56 @@ def parseSite(uri, contenttype, xpathquery, feedxpathquery, regex, enc):
                         file = urllib.request.urlopen(uri)
                         tree = etree.parse(file, parser)
                         file.close()
-                        result = tree.xpath(xpathquery)
+
+                        contentresult = [] if contentxpath == '' else tree.xpath(contentxpath)
+                        titleresult = [] if titlexpath == '' else tree.xpath(titlexpath)
 
                         if contenttype == 'html':
                                 basetaglist = tree.xpath('/html/head/base')
                                 if len(basetaglist) != 0:
                                         baseuri = basetaglist[0].attrib['href']
-                                toAbsoluteURIs(result, baseuri)
+                                if len(contentresult) != 0:
+                                        toAbsoluteURIs(contentresult, baseuri)
+                                if len(titleresult) != 0:
+                                    toAbsoluteURIs(titleresult, baseuri)
 
-                        if len(result) == 0:
-                                warning = "WARNING: selector became invalid!"
+                        if contentxpath != '' and titlexpath != '' and len(contentresult) != len(titleresult):
+                                warning = 'WARNING: number of title blocks (' + len(titleresult) + ') does not match number of content blocks (' + len(contentresult) + ')'
+                        elif contentxpath != '' and len(contentresult) == 0:
+                                warning = 'WARNING: content selector became invalid!'
+                        elif titlexpath != '' and len(titleresult) == 0:
+                                warning = 'WARNING: title selector became invalid!'
                         else:
-                                if feedxpathquery == '':
-                                        content = [etree.tostring(s, encoding=defaultEncoding, pretty_print=True).decode(defaultEncoding) for s in result]
-                                        titles = [getSubject(etree.tostring(s, encoding=defaultEncoding, method='text').decode(defaultEncoding)) for s in result]
-                                else:
-                                        content = []
-                                        titles = []
-                                        for r in result:
-                                                feedxpathresult = r.xpath(feedxpathquery)
-                                                if len(feedxpathresult) == 0:
-                                                        warning = "WARNING: feed selector became invalid!"
-                                                        break
-                                                else:
-                                                        content.append('\n'.join([etree.tostring(x, encoding=defaultEncoding, pretty_print=True).decode(defaultEncoding) for x in feedxpathresult]))
-                                                        titles.append(getSubject('\n'.join([etree.tostring(x, encoding=defaultEncoding, method='text').decode(defaultEncoding) for x in feedxpathresult])))
+                                if len(contentresult) == 0:
+                                        contentresult = titleresult
+                                if len(titleresult) == 0:
+                                        titleresult = contentresult
+
+                                contents = [etree.tostring(s, encoding=defaultEncoding, pretty_print=True).decode(defaultEncoding) for s in contentresult]
+                                titles = [getSubject(etree.tostring(s, encoding=defaultEncoding, method='text').decode(defaultEncoding)) for s in titleresult]
 
         except IOError as e:
                 warning = 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e)
                 return {'content': content, 'warning': warning}
 
-        if regex != '' and content != None:
-                newcontent = []
-                titles = []
-                for c in content:
-                        for s in re.findall(r'' + regex, c):
-                                newcontent.append(s)
-                                titles.append(s[:maxTitleLength])
-                content = newcontent
-                if len(content) == 0:
-                        warning = "WARNING: regex became invalid!"
+        if contentregex != '':
+                contents = [x for y in [re.findall(r'' + contentregex, c) for c in contents] for x in y]
+        if titleregex != '':
+                titles = [x for y in [re.findall(r'' + titleregex, c) for c in titles] for x in y]
 
-        return {'content': content, 'titles': titles, 'warning': warning}
+        if contentregex != '' and titleregex != '' and len(contents) != len(titles):
+                warning = 'WARNING: number of title blocks (' + len(titles) + ') does not match number of content blocks (' + len(contents) + ') after regex'
+        elif contentregex != '' and len(contents) == 0:
+                warning = 'WARNING: content regex became invalid!'
+        elif titleregex != '' and len(titles) == 0:
+                warning = 'WARNING: title regex became invalid!'
+        else:
+                if len(contents) == 0:
+                        contents = titles
+                if len(titles) == 0:
+                        titles = contents
+
+        return {'contents': contents, 'titles': titles, 'warning': warning}
 
 
 def getSubject(textContent):
@@ -179,7 +188,7 @@ def storeFileContents(shortname, parseResult):
                         os.remove(f)
 
         i = 0
-        for c in parseResult['content']:
+        for c in parseResult['contents']:
                 file = open(shortname + '.' + str(i) + '.txt', 'w')
                 file.write(c)
                 file.close()
@@ -197,7 +206,7 @@ def pollWebsites():
         for site in config.sites:
 
                 print('polling site [' + site['shortname'] + '] ...')
-                parseResult = parseSite(site['uri'], site.get('type', 'html'), site.get('xpath', ''), site.get('feedxpath', ''), site.get('regex', ''), site.get('encoding', defaultEncoding))
+                parseResult = parseSite(site['uri'], site.get('type', 'html'), site.get('contentxpath', ''), site.get('titlexpath', ''), site.get('contentregex', ''),site.get('titleregex', ''), site.get('encoding', defaultEncoding))
 
                 if parseResult['warning']:
                         subject = '[' + site['shortname'] + '] WARNING'
@@ -210,7 +219,7 @@ def pollWebsites():
                         changes = 0
                         fileContents = getFileContents(site['shortname'])
                         i = 0
-                        for content in parseResult['content']:
+                        for content in parseResult['contents']:
                                 if content not in fileContents:
                                         changes += 1
 
