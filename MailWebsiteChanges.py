@@ -93,7 +93,7 @@ def parseSite(uri, contenttype, contentxpath, titlexpath, contentregex, titlereg
                                         titleresult = contentresult
 
                         contents = [etree.tostring(s, encoding=defaultEncoding, pretty_print=True).decode(defaultEncoding) for s in contentresult]
-                        titles = [getSubject(etree.tostring(s, encoding=defaultEncoding, method='text').decode(defaultEncoding)) for s in titleresult]
+                        titles = [getSubject(' '.join(s.xpath('.//text()'))) for s in titleresult]
 
         except IOError as e:
                 warning = 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e)
