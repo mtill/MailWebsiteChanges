@@ -44,13 +44,13 @@ sites = [
      + short name of the entry, used as an identifier when sending email notifications
  * uri
      + URI of the website
- * type
-     + content type of the website, e.g., 'xml'/'html'/'text'
- * contentxpath / titlexpath
-     + XPath expression for the content/title sections to extract. Set this to '' if you don't want to use it.
- * contentregex / titleregex
-     + Regular expression. Set this to '' if you don't want to use it.
- * encoding
+ * type (optional; default: 'html')
+     + content type of the website, e.g., 'xml'/'html'/'text'.
+ * contentxpath / titlexpath (optional)
+     + XPath expression for the content/title sections to extract.
+ * contentregex / titleregex (optional)
+     + Regular expression.
+ * encoding (optional; default: 'utf-8')
      + Character encoding of the website, e.g., 'utf-8'.
 
 The <em>--dry-run="shortname"</em> option might be useful in order to validate and fine-tune a definition.
