@@ -39,26 +39,27 @@ sites = [
 </code>
 </pre>
 
+ * parameters:
 
- * shortname
-     + short name of the entry, used as an identifier when sending email notifications
- * uri
-     + URI of the website
- * type (optional; default: 'html')
-     + content type of the website, e.g., 'xml'/'html'/'text'.
- * contentxpath / titlexpath (optional)
-     + XPath expression for the content/title sections to extract.
- * contentregex / titleregex (optional)
-     + Regular expression.
- * encoding (optional; default: 'utf-8')
-     + Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
+   * shortname
+       + short name of the entry, used as an identifier when sending email notifications
+   * uri
+       + URI of the website
+   * type (optional; default: 'html')
+       + content type of the website, e.g., 'xml'/'html'/'text'.
+   * contentxpath / titlexpath (optional)
+       + XPath expression for the content/title sections to extract.
+   * contentregex / titleregex (optional)
+       + Regular expression.
+   * encoding (optional; default: 'utf-8')
+       + Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
 
 
-* We collect xpath snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!
+ * We collect xpath snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!
 
-* The <em>--dry-run="shortname"</em> option might be useful in order to validate and fine-tune a definition.
+ * The <em>--dry-run="shortname"</em> option might be useful in order to validate and fine-tune a definition.
 
-* If you would like to keep the data stored in a different place than the working directory, you can include something like this:
+ * If you would like to keep the data stored in a different place than the working directory, you can include something like this:
   <pre>
    <code>
   os.chdir('/path/to/data/directory')
