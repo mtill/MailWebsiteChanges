@@ -51,7 +51,7 @@ sites = [
  * contentregex / titleregex (optional)
      + Regular expression.
  * encoding (optional; default: 'utf-8')
-     + Character encoding of the website, e.g., 'utf-8'.
+     + Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
 
 The <em>--dry-run="shortname"</em> option might be useful in order to validate and fine-tune a definition.
 
