@@ -66,13 +66,16 @@ sites = [
           {'shortname': 'mywebsite3',
            'uri': 'http://www.mywebsite3.com/info',
            'type': 'text',
-           'contentxpath': '',
            'contentregex': 'Version\"\:\d*\.\d*',
            'encoding': 'utf-8'}
 
 ]
 </code>
 </pre>
+
+<ul>
+<li>
+<p>parameters:</p>
 
 <ul>
 <li>shortname
@@ -111,17 +114,20 @@ sites = [
 <li>Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.</li>
 </ul>
 </li>
-</ul><p>The <em>--dry-run="shortname"</em> option might be useful in order to validate and fine-tune a definition.</p>
-
+</ul>
+</li>
+<li><p>We collect xpath snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!</p></li>
+<li><p>The <em>--dry-run="shortname"</em> option might be useful in order to validate and fine-tune a definition.</p></li>
+<li>
 <p>If you would like to keep the data stored in a different place than the working directory, you can include something like this:</p>
 
 <pre>
- <code>
+<code>
 os.chdir('/path/to/data/directory')
- </code>
+</code>
 </pre>
-
-<h3>
+</li>
+</ul><h3>
 <a name="mail-settings" class="anchor" href="#mail-settings"><span class="octicon octicon-link"></span></a>Mail settings</h3>
 
 <pre>
