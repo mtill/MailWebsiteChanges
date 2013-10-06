@@ -32,13 +32,13 @@ sites = [
           {'shortname': 'mywebsite3',
            'uri': 'http://www.mywebsite3.com/info',
            'type': 'text',
-           'contentxpath': '',
            'contentregex': 'Version\"\:\d*\.\d*',
            'encoding': 'utf-8'}
 
 ]
 </code>
 </pre>
+
 
  * shortname
      + short name of the entry, used as an identifier when sending email notifications
@@ -53,14 +53,17 @@ sites = [
  * encoding (optional; default: 'utf-8')
      + Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
 
-The <em>--dry-run="shortname"</em> option might be useful in order to validate and fine-tune a definition.
 
-If you would like to keep the data stored in a different place than the working directory, you can include something like this:
-<pre>
- <code>
-os.chdir('/path/to/data/directory')
- </code>
-</pre>
+* We collect xpath snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!
+
+* The <em>--dry-run="shortname"</em> option might be useful in order to validate and fine-tune a definition.
+
+* If you would like to keep the data stored in a different place than the working directory, you can include something like this:
+  <pre>
+   <code>
+  os.chdir('/path/to/data/directory')
+   </code>
+  </pre>
 
 ### Mail settings
 <pre>

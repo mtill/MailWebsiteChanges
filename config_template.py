@@ -1,5 +1,7 @@
 import os.path
 
+#We collect xpath snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!
+
 sites = [
 
           {'shortname': 'mywebsite1',
