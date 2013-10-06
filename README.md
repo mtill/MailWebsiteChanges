@@ -19,17 +19,14 @@ sites = [
           {'shortname': 'mywebsite1',
            'uri': 'http://www.mywebsite1.com/info',
            'type': 'html',
-           'titlexpath': '//h1',
            'contentxpath': '//div',
-           'titleregex': '',
-           'contentregex': '',
            'encoding': 'utf-8'},
 
           {'shortname': 'mywebsite2',
            'uri': 'http://www.mywebsite2.com/info',
            'type': 'html',
            'contentxpath': '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' news-list-container \')]',
-           'regex': '',
+           'titlexpath': '//title',
            'encoding': 'utf-8'},
 
           {'shortname': 'mywebsite3',
@@ -56,7 +53,7 @@ sites = [
  * encoding
      + Character encoding of the website, e.g., 'utf-8'.
 
-<em>SelectorTest.py</em> might be useful in order to test the definitions before integrating them into the config file.
+The <em>--dry-run="shortname"</em> option might be useful in order to validate and fine-tune a definition.
 
 If you would like to keep the data stored in a different place than the working directory, you can include something like this:
 <pre>

@@ -251,11 +251,12 @@ def pollWebsites():
 if __name__ == "__main__":
 
         configMod = 'config'
+        dryrun = None
 
         try:
-                opts, args = getopt.getopt(sys.argv[1:], 'hc:', ['help', 'config='])
+                opts, args = getopt.getopt(sys.argv[1:], 'hc:d:', ['help', 'config=', 'dry-run='])
         except getopt.GetoptError:
-                print('Usage: MailWebsiteChanges.py --config=config')
+                print('Usage: MailWebsiteChanges.py --config=config --dry-run=shortname')
                 sys.exit(1)
         for opt, arg in opts:
                 if opt == '-h':
@@ -263,14 +264,23 @@ if __name__ == "__main__":
                         exit()
                 elif opt in ('-c', '--config'):
                         configMod = arg
+                elif opt in ('-d', '--dry-run'):
+                        dryrun = arg
 
         config = importlib.import_module(configMod)
 
-        try:
-                pollWebsites()
-        except:
-                msg = str(sys.exc_info()[0]) + '\n\n' + traceback.format_exc()
-                print(msg)
-                if config.receiver != '':
-                        sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, None)
+        if dryrun:
+                for site in config.sites:
+                        if site['shortname'] == dryrun:
+                                parseResult = parseSite(site['uri'], site.get('type', 'html'), site.get('contentxpath', ''), site.get('titlexpath', ''), site.get('contentregex', ''),site.get('titleregex', ''), site.get('encoding', defaultEncoding))
+                                print(parseResult)
+                                break
+        else:
+                try:
+                        pollWebsites()
+                except:
+                        msg = str(sys.exc_info()[0]) + '\n\n' + traceback.format_exc()
+                        print(msg)
+                        if config.receiver != '':
+                                sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, None)
 
