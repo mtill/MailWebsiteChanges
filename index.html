@@ -52,22 +52,17 @@ sites = [
 
           {'shortname': 'mywebsite1',
            'uri': 'http://www.mywebsite1.com/info',
-           'type': 'html',
-           'contentcss': 'div',
-           'encoding': 'utf-8'},
+           'contentcss': 'div'},
 
           {'shortname': 'mywebsite2',
            'uri': 'http://www.mywebsite2.com/info',
-           'type': 'html',
            'contentxpath': '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' news-list-container \')]',
-           'titlexpath': '//title',
-           'encoding': 'utf-8'},
+           'titlexpath': '//title'},
 
           {'shortname': 'mywebsite3',
            'uri': 'http://www.mywebsite3.com/info',
            'type': 'text',
-           'contentregex': 'Version\"\:\d*\.\d*',
-           'encoding': 'utf-8'}
+           'contentregex': 'Version\"\:\d*\.\d*'}
 
 ]
 </code>
@@ -78,52 +73,45 @@ sites = [
 <p>parameters:</p>
 
 <ul>
-<li>shortname
+<li>
+<p><b>shortname</b></p>
 
-<ul>
-<li>short name of the entry, used as an identifier when sending email notifications</li>
-</ul>
+<p>short name of the entry, used as an identifier when sending email notifications</p>
 </li>
-<li>uri
+<li>
+<p><b>uri</b></p>
 
-<ul>
-<li>URI of the website</li>
-</ul>
+<p>URI of the website</p>
 </li>
-<li>type (optional; default: 'html')
+<li>
+<p><b>type</b> (optional; default: 'html')</p>
 
-<ul>
-<li>content type of the website, e.g., 'xml'/'html'/'text'.</li>
-</ul>
+<p>content type of the website, e.g., 'xml'/'html'/'text'.</p>
 </li>
-<li>contentxpath / titlexpath (optional)
+<li>
+<p><b>contentxpath</b> / <b>titlexpath</b> (optional)</p>
 
-<ul>
-<li>XPath expression for the content/title sections to extract. If you prefer, you could use contentcss/titlecss instead.</li>
-</ul>
+<p>XPath expression for the content/title sections to extract. If you prefer, you could use contentcss/titlecss instead.</p>
 </li>
-<li>contentcss / titlecss (optional)
+<li>
+<p><b>contentcss</b> / <b>titlecss</b> (optional)</p>
 
-<ul>
-<li>CSS expression for the content/title sections to extract.</li>
-</ul>
+<p>CSS expression for the content/title sections to extract.</p>
 </li>
-<li>contentregex / titleregex (optional)
+<li>
+<p><b>contentregex</b> / <b>titleregex</b> (optional)</p>
 
-<ul>
-<li>Regular expression.</li>
-</ul>
+<p>Regular expression.</p>
 </li>
-<li>encoding (optional; default: 'utf-8')
+<li>
+<p><b>encoding</b> (optional; default: 'utf-8')</p>
 
-<ul>
-<li>Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.</li>
-</ul>
+<p>Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.</p>
 </li>
 </ul>
 </li>
-<li><p>We collect xpath snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!</p></li>
-<li><p>The <em>--dry-run="shortname"</em> option might be useful in order to validate and fine-tune a definition.</p></li>
+<li><p>We collect some XPath/CSS snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!</p></li>
+<li><p>The <b>--dry-run="shortname"</b> option might be useful in order to validate and fine-tune a definition.</p></li>
 <li>
 <p>If you would like to keep the data stored in a different place than the working directory, you can include something like this:</p>
 
