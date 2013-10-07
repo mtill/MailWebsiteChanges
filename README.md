@@ -18,22 +18,17 @@ sites = [
 
           {'shortname': 'mywebsite1',
            'uri': 'http://www.mywebsite1.com/info',
-           'type': 'html',
-           'contentcss': 'div',
-           'encoding': 'utf-8'},
+           'contentcss': 'div'},
 
           {'shortname': 'mywebsite2',
            'uri': 'http://www.mywebsite2.com/info',
-           'type': 'html',
            'contentxpath': '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' news-list-container \')]',
-           'titlexpath': '//title',
-           'encoding': 'utf-8'},
+           'titlexpath': '//title'},
 
           {'shortname': 'mywebsite3',
            'uri': 'http://www.mywebsite3.com/info',
            'type': 'text',
-           'contentregex': 'Version\"\:\d*\.\d*',
-           'encoding': 'utf-8'}
+           'contentregex': 'Version\"\:\d*\.\d*'}
 
 ]
 </code>
@@ -42,24 +37,24 @@ sites = [
  * parameters:
 
    * shortname
-       + short name of the entry, used as an identifier when sending email notifications
+       short name of the entry, used as an identifier when sending email notifications
    * uri
-       + URI of the website
+       URI of the website
    * type (optional; default: 'html')
-       + content type of the website, e.g., 'xml'/'html'/'text'.
+       content type of the website, e.g., 'xml'/'html'/'text'.
    * contentxpath / titlexpath (optional)
-       + XPath expression for the content/title sections to extract. If you prefer, you could use contentcss/titlecss instead.
+       XPath expression for the content/title sections to extract. If you prefer, you could use contentcss/titlecss instead.
    * contentcss / titlecss (optional)
-       + CSS expression for the content/title sections to extract.
+       CSS expression for the content/title sections to extract.
    * contentregex / titleregex (optional)
-       + Regular expression.
+       Regular expression.
    * encoding (optional; default: 'utf-8')
-       + Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
+       Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
 
 
- * We collect xpath snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!
+ * We collect some XPath/CSS snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!
 
- * The <em>--dry-run="shortname"</em> option might be useful in order to validate and fine-tune a definition.
+ * The <b>--dry-run="shortname"</b> option might be useful in order to validate and fine-tune a definition.
 
  * If you would like to keep the data stored in a different place than the working directory, you can include something like this:
   <pre>
