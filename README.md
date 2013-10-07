@@ -36,33 +36,20 @@ sites = [
 
  * parameters:
 
-   * <b>shortname</b>
-
-       short name of the entry, used as an identifier when sending email notifications
-
-   * <b>uri</b>
-
-       URI of the website
-
-   * <b>type</b> (optional; default: 'html')
-
-       content type of the website, e.g., 'xml'/'html'/'text'.
-
-   * <b>contentxpath</b> / <b>titlexpath</b> (optional)
-
-       XPath expression for the content/title sections to extract. If you prefer, you could use contentcss/titlecss instead.
-
-   * <b>contentcss</b> / <b>titlecss</b> (optional)
-
-       CSS expression for the content/title sections to extract.
-
-   * <b>contentregex</b> / <b>titleregex</b> (optional)
-
-       Regular expression.
-
-   * <b>encoding</b> (optional; default: 'utf-8')
-
-       Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
+   * <b>shortname</b>  
+     short name of the entry, used as an identifier when sending email notifications
+   * <b>uri</b>  
+     URI of the website
+   * <b>type</b> (optional; default: 'html')  
+     content type of the website, e.g., 'xml'/'html'/'text'.
+   * <b>contentxpath</b> / <b>titlexpath</b> (optional)  
+     XPath expression for the content/title sections to extract. If you prefer, you could use contentcss/titlecss instead.
+   * <b>contentcss</b> / <b>titlecss</b> (optional)  
+     CSS expression for the content/title sections to extract.
+   * <b>contentregex</b> / <b>titleregex</b> (optional)  
+     Regular expression.
+   * <b>encoding</b> (optional; default: 'utf-8')  
+     Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
 
 
  * We collect some XPath/CSS snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!
