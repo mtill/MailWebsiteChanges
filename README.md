@@ -37,18 +37,31 @@ sites = [
  * parameters:
 
    * shortname
+
        short name of the entry, used as an identifier when sending email notifications
+
    * uri
+
        URI of the website
+
    * type (optional; default: 'html')
+
        content type of the website, e.g., 'xml'/'html'/'text'.
+
    * contentxpath / titlexpath (optional)
+
        XPath expression for the content/title sections to extract. If you prefer, you could use contentcss/titlecss instead.
+
    * contentcss / titlecss (optional)
+
        CSS expression for the content/title sections to extract.
+
    * contentregex / titleregex (optional)
+
        Regular expression.
+
    * encoding (optional; default: 'utf-8')
+
        Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
 
 
