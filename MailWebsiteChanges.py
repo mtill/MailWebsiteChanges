@@ -3,6 +3,7 @@
 import urllib.request, urllib.error, urllib.parse
 import urllib.parse
 from lxml import etree
+from cssselect import GenericTranslator
 import re
 import io
 
@@ -208,7 +209,14 @@ def pollWebsites():
         for site in config.sites:
 
                 print('polling site [' + site['shortname'] + '] ...')
-                parseResult = parseSite(site['uri'], site.get('type', 'html'), site.get('contentxpath', ''), site.get('titlexpath', ''), site.get('contentregex', ''),site.get('titleregex', ''), site.get('encoding', defaultEncoding))
+                contentxpath = site.get('contentxpath', '')
+                if contentxpath == '' and site.get('contentcss'):
+                        contentxpath = GenericTranslator().css_to_xpath(site.get('contentcss'))
+                titlexpath = site.get('titlexpath', '')
+                if titlexpath == '' and site.get('titlecss'):
+                        titlexpath = GenericTranslator().css_to_xpath(site.get('titlecss'))
+
+                parseResult = parseSite(site['uri'], site.get('type', 'html'), contentxpath, titlexpath, site.get('contentregex', ''),site.get('titleregex', ''), site.get('encoding', defaultEncoding))
 
                 if parseResult['warning']:
                         subject = '[' + site['shortname'] + '] WARNING'
@@ -272,7 +280,14 @@ if __name__ == "__main__":
         if dryrun:
                 for site in config.sites:
                         if site['shortname'] == dryrun:
-                                parseResult = parseSite(site['uri'], site.get('type', 'html'), site.get('contentxpath', ''), site.get('titlexpath', ''), site.get('contentregex', ''),site.get('titleregex', ''), site.get('encoding', defaultEncoding))
+                                contentxpath = site.get('contentxpath', '')
+                                if contentxpath == '' and site.get('contentcss'):
+                                        contentxpath = GenericTranslator().css_to_xpath(site.get('contentcss'))
+                                titlexpath = site.get('titlexpath', '')
+                                if titlexpath == '' and site.get('titlecss'):
+                                        titlexpath = GenericTranslator().css_to_xpath(site.get('titlecss'))
+
+                                parseResult = parseSite(site['uri'], site.get('type', 'html'), contentxpath, titlexpath, site.get('contentregex', ''),site.get('titleregex', ''), site.get('encoding', defaultEncoding))
                                 print(parseResult)
                                 break
         else:
