@@ -49,8 +49,21 @@ def toAbsoluteURIs(trees, baseuri):
                                                 tag.attrib[uriAttribute[1]] = urllib.parse.urljoin(baseuri, tag.attrib[uriAttribute[1]])
 
 
-def parseSite(uri, contenttype, contentxpath, titlexpath, contentregex, titleregex, enc):
+def parseSite(site):
         content, titles, warning = None, None, None
+
+        uri = site['uri']
+        contenttype = site.get('type', 'html')
+        contentregex = site.get('contentregex', '')
+        titleregex = site.get('titleregex', '')
+        enc = site.get('encoding', defaultEncoding)
+
+        contentxpath = site.get('contentxpath', '')
+        if contentxpath == '' and site.get('contentcss', '') != '':
+                contentxpath = GenericTranslator().css_to_xpath(site.get('contentcss'))
+        titlexpath = site.get('titlexpath', '')
+        if titlexpath == '' and site.get('titlecss', '') != '':
+                titlexpath = GenericTranslator().css_to_xpath(site.get('titlecss'))
 
         try:
                 if contentxpath == '' and titlexpath == '':
@@ -209,14 +222,7 @@ def pollWebsites():
         for site in config.sites:
 
                 print('polling site [' + site['shortname'] + '] ...')
-                contentxpath = site.get('contentxpath', '')
-                if contentxpath == '' and site.get('contentcss'):
-                        contentxpath = GenericTranslator().css_to_xpath(site.get('contentcss'))
-                titlexpath = site.get('titlexpath', '')
-                if titlexpath == '' and site.get('titlecss'):
-                        titlexpath = GenericTranslator().css_to_xpath(site.get('titlecss'))
-
-                parseResult = parseSite(site['uri'], site.get('type', 'html'), contentxpath, titlexpath, site.get('contentregex', ''),site.get('titleregex', ''), site.get('encoding', defaultEncoding))
+                parseResult = parseSite(site)
 
                 if parseResult['warning']:
                         subject = '[' + site['shortname'] + '] WARNING'
@@ -280,14 +286,7 @@ if __name__ == "__main__":
         if dryrun:
                 for site in config.sites:
                         if site['shortname'] == dryrun:
-                                contentxpath = site.get('contentxpath', '')
-                                if contentxpath == '' and site.get('contentcss'):
-                                        contentxpath = GenericTranslator().css_to_xpath(site.get('contentcss'))
-                                titlexpath = site.get('titlexpath', '')
-                                if titlexpath == '' and site.get('titlecss'):
-                                        titlexpath = GenericTranslator().css_to_xpath(site.get('titlecss'))
-
-                                parseResult = parseSite(site['uri'], site.get('type', 'html'), contentxpath, titlexpath, site.get('contentregex', ''),site.get('titleregex', ''), site.get('encoding', defaultEncoding))
+                                parseResult = parseSite(site)
                                 print(parseResult)
                                 break
         else:
