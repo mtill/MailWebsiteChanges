@@ -2,7 +2,7 @@
 
 Python script to keep track of website changes; sends email notifications on updates and/or also provides an RSS feed
 
-To specify which parts of a website should be monitored, <b>both XPath selectors</b> (e.g. "//h1") <b>and regular expressions can be used</b>.
+To specify which parts of a website should be monitored, <b>XPath selectors</b> (e.g. "//h1"), <b>CSS selectors</b> (e.g. "h1"), <b>and regular expressions can be used</b> (just choose the tools you like!).
 
 <i>This is Open Source -- so please contribute eagerly! ;-)</i>
 
@@ -19,7 +19,7 @@ sites = [
           {'shortname': 'mywebsite1',
            'uri': 'http://www.mywebsite1.com/info',
            'type': 'html',
-           'contentxpath': '//div',
+           'contentcss': 'div',
            'encoding': 'utf-8'},
 
           {'shortname': 'mywebsite2',
@@ -48,7 +48,9 @@ sites = [
    * type (optional; default: 'html')
        + content type of the website, e.g., 'xml'/'html'/'text'.
    * contentxpath / titlexpath (optional)
-       + XPath expression for the content/title sections to extract.
+       + XPath expression for the content/title sections to extract. If you prefer, you could use contentcss/titlecss instead.
+   * contentcss / titlecss (optional)
+       + CSS expression for the content/title sections to extract.
    * contentregex / titleregex (optional)
        + Regular expression.
    * encoding (optional; default: 'utf-8')
@@ -111,5 +113,5 @@ If you prefer invoking the script with an alternate configuration files, simply 
 
 
 ## Requirements
-Requires Python 3 and <a href="http://lxml.de/">lxml</a> (for Debian/Ubuntu, use <code>apt-get install python3 python3-lxml</code>).
+Requires Python 3, <a href="http://lxml.de/">lxml</a>, and <a href="http://pythonhosted.org/cssselect/">cssselect</a> (for Debian/Ubuntu, use <code>apt-get install python3</code> and <code>sudo pip-3.2 install lxml cssselect</code>).
 
