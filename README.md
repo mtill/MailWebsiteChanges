@@ -48,9 +48,9 @@ sites = [
    * <b>contentxpath</b> / <b>titlexpath</b> (optional)  
      XPath expression for the content/title sections to extract. If you prefer, you could use contentcss/titlecss instead.
    * <b>contentcss</b> / <b>titlecss</b> (optional)  
-     CSS expression for the content/title sections to extract.
+     CSS expression for the content/title sections to extract. This is ignored if there is a corresponding XPath definition.
    * <b>contentregex</b> / <b>titleregex</b> (optional)  
-     Regular expression.
+     Regular expression. If XPath/CSS selector is defined, the regular expression is applied afterwards.
    * <b>encoding</b> (optional; default: 'utf-8')  
      Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
 
@@ -69,7 +69,7 @@ sites = [
 ### Mail settings
 <pre>
 <code>
-enableMailNotifications = True
+enableMailNotifications = True   #enable/disable notification messages; if set to False, only send error messages
 subjectPostfix = 'A website has been updated!'
 
 sender = 'me@mymail.com'
@@ -78,11 +78,9 @@ useTLS = True
 smtpport = 587
 smtpusername = sender
 smtppwd = 'mypassword'
-receiver = 'me2@mymail.com'
+receiver = 'me2@mymail.com'   # set to '' to also disable notifications in case of errors (not recommended)
 </code>
 </pre>
-
-If <em>receiver</em> is empty, no mail will be sent.
 
 
 ### RSS Feeds
@@ -90,7 +88,7 @@ If you prefer to use the RSS feature, you just have to specify the path of the f
 
 <pre>
  <code>
-enableRSSFeed = True
+enableRSSFeed = True   #enable/disable RSS feed
 
 rssfile = 'feed.xml'
 maxFeeds = 100
