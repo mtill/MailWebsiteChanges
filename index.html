@@ -89,10 +89,10 @@ content type of the website, e.g., 'xml'/'html'/'text'.</li>
 XPath expression for the content/title sections to extract. If you prefer, you could use contentcss/titlecss instead.</li>
 <li>
 <b>contentcss</b> / <b>titlecss</b> (optional)<br>
-CSS expression for the content/title sections to extract.</li>
+CSS expression for the content/title sections to extract. This is ignored if there is a corresponding XPath definition.</li>
 <li>
 <b>contentregex</b> / <b>titleregex</b> (optional)<br>
-Regular expression.</li>
+Regular expression. If XPath/CSS selector is defined, the regular expression is applied afterwards.</li>
 <li>
 <b>encoding</b> (optional; default: 'utf-8')<br>
 Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.</li>
@@ -114,7 +114,7 @@ os.chdir('/path/to/data/directory')
 
 <pre>
 <code>
-enableMailNotifications = True
+enableMailNotifications = True   #enable/disable notification messages; if set to False, only send error messages
 subjectPostfix = 'A website has been updated!'
 
 sender = 'me@mymail.com'
@@ -123,11 +123,9 @@ useTLS = True
 smtpport = 587
 smtpusername = sender
 smtppwd = 'mypassword'
-receiver = 'me2@mymail.com'
+receiver = 'me2@mymail.com'   # set to '' to also disable notifications in case of errors (not recommended)
 </code>
 </pre>
-
-<p>If <em>receiver</em> is empty, no mail will be sent.</p>
 
 <h3>
 <a name="rss-feeds" class="anchor" href="#rss-feeds"><span class="octicon octicon-link"></span></a>RSS Feeds</h3>
@@ -136,7 +134,7 @@ receiver = 'me2@mymail.com'
 
 <pre>
  <code>
-enableRSSFeed = True
+enableRSSFeed = True   #enable/disable RSS feed
 
 rssfile = 'feed.xml'
 maxFeeds = 100
