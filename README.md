@@ -4,6 +4,9 @@ Python script to keep track of website changes; sends email notifications on upd
 
 To specify which parts of a website should be monitored, <b>XPath selectors</b> (e.g. "//h1"), <b>CSS selectors</b> (e.g. "h1"), <b>and regular expressions can be used</b> (just choose the tools you like!).
 
+MailWebsiteChanges is related to <a href="http://code.google.com/p/pagemon-chrome-ext/">PageMonitor</a> for Chrome and <a href="https://addons.mozilla.org/de/firefox/addon/alertbox/">AlertBox</a> / <a href="https://addons.mozilla.org/de/firefox/addon/check4change/">Check4Change</a> for Firefox. However, instead of running in your browser, you can run it from command line / bash and install it as a cron job running on your linux server.
+
+
 <i>This is Open Source -- so please contribute eagerly! ;-)</i>
 
 
