@@ -25,7 +25,12 @@ sites = [
            'type': 'text',
            'contentxpath': '',
            'contentregex': 'Version\"\:\d*\.\d*',
-           'encoding': 'utf-8'}
+           'encoding': 'utf-8'},
+
+          {'shortname': 'lscmd',
+           'uri': 'cmd://ls -l /home/pi',
+           'contentregex': '.*Desktop.*'
+          }
 
 ]
 

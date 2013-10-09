@@ -17,6 +17,8 @@ import sys
 import getopt
 import traceback
 
+import subprocess
+
 import time
 from time import strftime
 import random
@@ -37,6 +39,7 @@ emptyfeed = """<?xml version="1.0"?>
 </rss>"""
 
 uriAttributes = [['//img[@src]', 'src'], ['//a[@href]', 'href']]
+cmdscheme = 'cmd://'
 
 
 def toAbsoluteURIs(trees, baseuri):
@@ -66,11 +69,17 @@ def parseSite(site):
                 titlexpath = GenericTranslator().css_to_xpath(site.get('titlecss'))
 
         try:
-                if contentxpath == '' and titlexpath == '':
-                        file = urllib.request.urlopen(uri)
+                if contenttype == 'text' or (contentxpath == '' and titlexpath == ''):
+                        if uri.startswith(cmdscheme):
+                                process = subprocess.Popen(uri[len(cmdscheme):], stdout=subprocess.PIPE, shell=True, close_fds=True)
+                                file = process.stdout
+                        else:
+                                file = urllib.request.urlopen(uri)
                         contents = [file.read().decode(enc)]
                         titles = []
                         file.close()
+                        if uri.startswith(cmdscheme) and process.wait() != 0:
+                                warning = 'WARNING: process terminated with an error'
                 else:
                         baseuri = uri
                         if contenttype == 'html':
@@ -78,9 +87,16 @@ def parseSite(site):
                         else:
                                 parser = etree.XMLParser(recover=True, encoding=enc)
 
-                        file = urllib.request.urlopen(uri)
+                        if uri.startswith(cmdscheme):
+                                process = subprocess.Popen(uri[len(cmdscheme):], stdout=subprocess.PIPE, shell=True, close_fds=True)
+                                file = process.stdout
+                        else:
+                                file = urllib.request.urlopen(uri)
+
                         tree = etree.parse(file, parser)
                         file.close()
+                        if uri.startswith(cmdscheme) and process.wait() != 0:
+                                warning = 'WARNING: process terminated with an error'
 
                         contentresult = tree.xpath(contentxpath) if contentxpath else []
                         titleresult = tree.xpath(titlexpath) if titlexpath else []
