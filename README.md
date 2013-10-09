@@ -42,9 +42,9 @@ sites = [
    * <b>shortname</b>  
      short name of the entry, used as an identifier when sending email notifications
    * <b>uri</b>  
-     URI of the website
+     URI of the website; If the scheme of the uri is 'cmd://', the string is interpreted as a command line.
    * <b>type</b> (optional; default: 'html')  
-     content type of the website, e.g., 'xml'/'html'/'text'.
+     content type of the website, e.g., 'xml'/'html'/'text'/'cmd'.
    * <b>contentxpath</b> / <b>titlexpath</b> (optional)  
      XPath expression for the content/title sections to extract. If you prefer, you could use contentcss/titlecss instead.
    * <b>contentcss</b> / <b>titlecss</b> (optional)  
