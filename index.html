@@ -80,10 +80,10 @@ sites = [
 short name of the entry, used as an identifier when sending email notifications</li>
 <li>
 <b>uri</b><br>
-URI of the website</li>
+URI of the website; If the scheme of the uri is 'cmd://', the string is interpreted as a command and the standard output (stdout) is parsed.</li>
 <li>
 <b>type</b> (optional; default: 'html')<br>
-content type of the website, e.g., 'xml'/'html'/'text'.</li>
+content type, e.g., 'xml'/'html'/'text'.</li>
 <li>
 <b>contentxpath</b> / <b>titlexpath</b> (optional)<br>
 XPath expression for the content/title sections to extract. If you prefer, you could use contentcss/titlecss instead.</li>
