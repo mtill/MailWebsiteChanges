@@ -69,17 +69,17 @@ def parseSite(site):
                 titlexpath = GenericTranslator().css_to_xpath(site.get('titlecss'))
 
         try:
+
+                if uri.startswith(cmdscheme):
+                        process = subprocess.Popen(uri[len(cmdscheme):], stdout=subprocess.PIPE, shell=True, close_fds=True)
+                        file = process.stdout
+                else:
+                        file = urllib.request.urlopen(uri)
+
+
                 if contenttype == 'text' or (contentxpath == '' and titlexpath == ''):
-                        if uri.startswith(cmdscheme):
-                                process = subprocess.Popen(uri[len(cmdscheme):], stdout=subprocess.PIPE, shell=True, close_fds=True)
-                                file = process.stdout
-                        else:
-                                file = urllib.request.urlopen(uri)
                         contents = [file.read().decode(enc)]
                         titles = []
-                        file.close()
-                        if uri.startswith(cmdscheme) and process.wait() != 0:
-                                warning = 'WARNING: process terminated with an error'
                 else:
                         baseuri = uri
                         if contenttype == 'html':
@@ -87,16 +87,7 @@ def parseSite(site):
                         else:
                                 parser = etree.XMLParser(recover=True, encoding=enc)
 
-                        if uri.startswith(cmdscheme):
-                                process = subprocess.Popen(uri[len(cmdscheme):], stdout=subprocess.PIPE, shell=True, close_fds=True)
-                                file = process.stdout
-                        else:
-                                file = urllib.request.urlopen(uri)
-
                         tree = etree.parse(file, parser)
-                        file.close()
-                        if uri.startswith(cmdscheme) and process.wait() != 0:
-                                warning = 'WARNING: process terminated with an error'
 
                         contentresult = tree.xpath(contentxpath) if contentxpath else []
                         titleresult = tree.xpath(titlexpath) if titlexpath else []
@@ -127,6 +118,10 @@ def parseSite(site):
 
         except IOError as e:
                 warning = 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e)
+
+        file.close()
+        if uri.startswith(cmdscheme) and process.wait() != 0:
+                warning = 'WARNING: process terminated with an error'
 
         if warning:
                 return {'content': content, 'titles': titles, 'warning': warning}
