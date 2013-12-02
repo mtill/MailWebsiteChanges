@@ -113,6 +113,6 @@ Requires Python 3, <a href="http://lxml.de/">lxml</a>, and <a href="http://pytho
 For Ubuntu 12.04, type:
 
   * sudo apt-get install python3 python3-dev python3-setuptools libxml2 libxslt1.1 libxml2-dev libxslt1-dev python-libxml2 python-libxslt1
-  * sudo easyi\_install3 pip
+  * sudo easy\_install3 pip
   * sudo pip-3.2 install lxml cssselect
 
