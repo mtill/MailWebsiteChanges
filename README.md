@@ -109,5 +109,10 @@ If you prefer invoking the script with an alternate configuration files, simply 
 
 
 ## Requirements
-Requires Python 3, <a href="http://lxml.de/">lxml</a>, and <a href="http://pythonhosted.org/cssselect/">cssselect</a> (for Ubuntu 12.04, use <code>sudo apt-get install python3 python3-dev python3-setuptools libxml2 libxslt1.1 libxml2-dev libxslt1-dev python-libxml2 python-libxslt1</code>, <code>sudo easy\_install3 pip</code> and <code>sudo pip-3.2 install lxml cssselect</code>).
+Requires Python 3, <a href="http://lxml.de/">lxml</a>, and <a href="http://pythonhosted.org/cssselect/">cssselect</a>.
+For Ubuntu 12.04, type:
+
+  sudo apt-get install python3 python3-dev python3-setuptools libxml2 libxslt1.1 libxml2-dev libxslt1-dev python-libxml2 python-libxslt1
+  sudo easyi\_install3 pip
+  sudo pip-3.2 install lxml cssselect
 
