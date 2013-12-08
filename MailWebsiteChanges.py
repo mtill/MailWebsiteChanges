@@ -127,9 +127,9 @@ def parseSite(site):
                 return {'content': content, 'titles': titles, 'warning': warning}
 
         if contentregex:
-                contents = [x for y in [re.findall(r'' + contentregex, c) for c in contents] for x in y]
+                contents = [x for y in [re.findall(r'' + contentregex, c, re.S) for c in contents] for x in y]
         if titleregex:
-                titles = [x for y in [re.findall(r'' + titleregex, c) for c in titles] for x in y]
+                titles = [x for y in [re.findall(r'' + titleregex, c, re.S) for c in titles] for x in y]
 
         if contentregex and titleregex and len(contents) != len(titles):
                 warning = 'WARNING: number of title blocks (' + str(len(titles)) + ') does not match number of content blocks (' + str(len(contents)) + ') after regex'
