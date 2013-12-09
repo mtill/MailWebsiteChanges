@@ -41,6 +41,8 @@ emptyfeed = """<?xml version="1.0"?>
 uriAttributes = [['//img[@src]', 'src'], ['//a[@href]', 'href']]
 cmdscheme = 'cmd://'
 
+mailsession = None
+
 
 def toAbsoluteURIs(trees, baseuri):
         for tree in trees:
@@ -175,6 +177,8 @@ def genFeedItem(subject, content, link, change):
 
 
 def sendmail(subject, content, sendAsHtml, link):
+        global mailsession
+
         if sendAsHtml:
                 baseurl = None
                 if link != None:
@@ -190,13 +194,14 @@ def sendmail(subject, content, sendAsHtml, link):
         mail['To'] = config.receiver
         mail['Subject'] = Header(subject, defaultEncoding)
 
-        s = smtplib.SMTP(config.smtphost, config.smtpport)
-        if config.useTLS:
-                s.ehlo()
-                s.starttls()
-        s.login(config.smtpusername, config.smtppwd)
-        s.sendmail(config.sender, config.receiver, mail.as_string())
-        s.quit()
+        if mailsession is None:
+                mailsession = smtplib.SMTP(config.smtphost, config.smtpport)
+                if config.useTLS:
+                        mailsession.ehlo()
+                        mailsession.starttls()
+                mailsession.login(config.smtpusername, config.smtppwd)
+
+        mailsession.sendmail(config.sender, config.receiver, mail.as_string())
 
 
 def getFileContents(shortname):
@@ -308,4 +313,7 @@ if __name__ == "__main__":
                         print(msg)
                         if config.receiver != '':
                                 sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, None)
+
+                if mailsession:
+                        mailsession.quit()
 
