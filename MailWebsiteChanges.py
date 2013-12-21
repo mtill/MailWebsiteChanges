@@ -55,7 +55,7 @@ def toAbsoluteURIs(trees, baseuri):
 
 
 def parseSite(site):
-        content, titles, warning = None, None, None
+        file, content, titles, warning = None, None, None, None
 
         uri = site['uri']
         contenttype = site.get('type', 'html')
@@ -121,7 +121,9 @@ def parseSite(site):
         except IOError as e:
                 warning = 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e)
 
-        file.close()
+        if file is not None:
+                file.close()
+
         if uri.startswith(cmdscheme) and process.wait() != 0:
                 warning = 'WARNING: process terminated with an error'
 
