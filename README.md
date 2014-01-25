@@ -53,6 +53,8 @@ sites = [
      Regular expression. If XPath/CSS selector is defined, the regular expression is applied afterwards.
    * <b>encoding</b> (optional; default: 'utf-8')  
      Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
+   * <b>receiver</b> (optional)
+     Overwrites global receiver specification.
 
 
  * We collect some XPath/CSS snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!

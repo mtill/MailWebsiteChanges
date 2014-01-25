@@ -178,7 +178,7 @@ def genFeedItem(subject, content, link, change):
         return feeditem
 
 
-def sendmail(subject, content, sendAsHtml, link):
+def sendmail(receiver, subject, content, sendAsHtml, link):
         global mailsession
 
         if sendAsHtml:
@@ -193,7 +193,7 @@ def sendmail(subject, content, sendAsHtml, link):
                 mail = MIMEText(content, 'text', defaultEncoding)
 
         mail['From'] = config.sender
-        mail['To'] = config.receiver
+        mail['To'] = receiver
         mail['Subject'] = Header(subject, defaultEncoding)
 
         if mailsession is None:
@@ -203,7 +203,7 @@ def sendmail(subject, content, sendAsHtml, link):
                         mailsession.starttls()
                 mailsession.login(config.smtpusername, config.smtppwd)
 
-        mailsession.sendmail(config.sender, config.receiver, mail.as_string())
+        mailsession.sendmail(config.sender, receiver, mail.as_string())
 
 
 def getFileContents(shortname):
@@ -241,12 +241,15 @@ def pollWebsites():
 
                 print('polling site [' + site['shortname'] + '] ...')
                 parseResult = parseSite(site)
+                receiver = site['receiver']
+                if receiver == None:
+                        receiver = config.receiver
 
                 if parseResult['warning']:
                         subject = '[' + site['shortname'] + '] WARNING'
                         print('WARNING: ' + parseResult['warning'])
                         if config.enableMailNotifications:
-                                sendmail(subject, parseResult['warning'], False, None)
+                                sendmail(receiver, subject, parseResult['warning'], False, None)
                         if config.enableRSSFeed:
                                 feedXML.xpath('//channel')[0].append(genFeedItem(subject, parseResult['warning'], site['uri'], 0))
                 else:
@@ -260,7 +263,7 @@ def pollWebsites():
                                         subject = '[' + site['shortname'] + '] ' + parseResult['titles'][i]
                                         print('    ' + subject)
                                         if config.enableMailNotifications:
-                                                sendmail(subject, content, (site.get('type', 'html') == 'html'), site['uri'])
+                                                sendmail(receiver, subject, content, (site.get('type', 'html') == 'html'), site['uri'])
 
                                         if config.enableRSSFeed:
                                                 feedXML.xpath('//channel')[0].append(genFeedItem(subject, content, site['uri'], changes))
@@ -314,8 +317,9 @@ if __name__ == "__main__":
                         msg = str(sys.exc_info()[0]) + '\n\n' + traceback.format_exc()
                         print(msg)
                         if config.receiver != '':
-                                sendmail('[MailWebsiteChanges] Something went wrong ...', msg, False, None)
+                                sendmail(config.receiver, '[MailWebsiteChanges] Something went wrong ...', msg, False, None)
 
                 if mailsession:
                         mailsession.quit()
+                        mailsession = None
 
