@@ -260,7 +260,7 @@ def pollWebsites():
 
                                         subject = '[' + site['shortname'] + '] ' + parseResult['titles'][i]
                                         print('    ' + subject)
-                                        if config.enableMailNotifications:
+                                        if config.enableMailNotifications and len(fileContents) > 0:
                                                 sendmail(receiver, subject, content, (site.get('type', 'html') == 'html'), site['uri'])
 
                                         if config.enableRSSFeed:
