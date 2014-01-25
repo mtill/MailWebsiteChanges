@@ -241,9 +241,7 @@ def pollWebsites():
 
                 print('polling site [' + site['shortname'] + '] ...')
                 parseResult = parseSite(site)
-                receiver = site['receiver']
-                if receiver == None:
-                        receiver = config.receiver
+                receiver = site.get('receiver', config.receiver)
 
                 if parseResult['warning']:
                         subject = '[' + site['shortname'] + '] WARNING'
