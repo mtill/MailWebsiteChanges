@@ -203,7 +203,7 @@ def sendmail(receiver, subject, content, sendAsHtml, link):
                         mailsession.starttls()
                 mailsession.login(config.smtpusername, config.smtppwd)
 
-        mailsession.sendmail(config.sender, receiver, mail.as_string())
+        mailsession.sendmail(config.sender, receiver.split(','), mail.as_string())
 
 
 def getFileContents(shortname):
