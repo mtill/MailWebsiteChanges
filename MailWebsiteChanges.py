@@ -29,6 +29,7 @@ config = None
 defaultEncoding = 'utf-8'
 maxTitleLength = 150
 
+# this is how an empty feed looks like
 emptyfeed = """<?xml version="1.0"?>
 <rss version="2.0">
  <channel>
@@ -38,12 +39,14 @@ emptyfeed = """<?xml version="1.0"?>
  </channel>
 </rss>"""
 
+# Attributes in HTML files storing URI values. These values are automatically translated to absolute URIs.
 uriAttributes = [['//img[@src]', 'src'], ['//a[@href]', 'href']]
 cmdscheme = 'cmd://'
 
 mailsession = None
 
 
+# translates all relative URIs found in trees to absolute URIs
 def toAbsoluteURIs(trees, baseuri):
         for tree in trees:
                 for uriAttribute in uriAttributes:
@@ -64,7 +67,7 @@ def parseSite(site):
         enc = site.get('encoding', defaultEncoding)
 
         contentxpath = site.get('contentxpath', '')
-        if contentxpath == '' and site.get('contentcss', '') != '':
+        if contentxpath == '' and site.get('contentcss', '') != '': # CSS
                 contentxpath = GenericTranslator().css_to_xpath(site.get('contentcss'))
         titlexpath = site.get('titlexpath', '')
         if titlexpath == '' and site.get('titlecss', '') != '':
@@ -72,10 +75,10 @@ def parseSite(site):
 
         try:
 
-                if uri.startswith(cmdscheme):
+                if uri.startswith(cmdscheme): # run command and retrieve output
                         process = subprocess.Popen(uri[len(cmdscheme):], stdout=subprocess.PIPE, shell=True, close_fds=True)
                         file = process.stdout
-                else:
+                else: # open website
                         file = urllib.request.urlopen(uri)
 
 
@@ -91,9 +94,11 @@ def parseSite(site):
 
                         tree = etree.parse(file, parser)
 
+                        # xpath
                         contentresult = tree.xpath(contentxpath) if contentxpath else []
                         titleresult = tree.xpath(titlexpath) if titlexpath else []
 
+                        # translate relative URIs to absolute URIs
                         if contenttype == 'html':
                                 basetaglist = tree.xpath('/html/head/base')
                                 if len(basetaglist) != 0:
@@ -101,7 +106,7 @@ def parseSite(site):
                                 if len(contentresult) != 0:
                                         toAbsoluteURIs(contentresult, baseuri)
                                 if len(titleresult) != 0:
-                                    toAbsoluteURIs(titleresult, baseuri)
+                                        toAbsoluteURIs(titleresult, baseuri)
 
                         if contentxpath != '' and titlexpath != '' and len(contentresult) != len(titleresult):
                                 warning = 'WARNING: number of title blocks (' + str(len(titleresult)) + ') does not match number of content blocks (' + str(len(contentresult)) + ')'
@@ -130,6 +135,7 @@ def parseSite(site):
         if warning:
                 return {'content': content, 'titles': titles, 'warning': warning}
 
+        # parse regex
         if contentregex:
                 contents = [x for y in [re.findall(r'' + contentregex, c, re.S) for c in contents] for x in y]
         if titleregex:
@@ -150,6 +156,7 @@ def parseSite(site):
         return {'contents': contents, 'titles': titles, 'warning': warning}
 
 
+# returns a short subject line
 def getSubject(textContent):
         if textContent == None or textContent == '':
                 return config.subjectPostfix
@@ -157,6 +164,7 @@ def getSubject(textContent):
         return (textContent[:maxTitleLength] + ' [..]') if len(textContent) > maxTitleLength else textContent
 
 
+# generates a new RSS feed item
 def genFeedItem(subject, content, link, change):
         feeditem = etree.Element('item')
         titleitem = etree.Element('title')
@@ -178,6 +186,7 @@ def genFeedItem(subject, content, link, change):
         return feeditem
 
 
+# sends mail notification
 def sendmail(receiver, subject, content, sendAsHtml, link):
         global mailsession
 
@@ -196,6 +205,7 @@ def sendmail(receiver, subject, content, sendAsHtml, link):
         mail['To'] = receiver
         mail['Subject'] = Header(subject, defaultEncoding)
 
+        # initialize session once, not each time this method gets called
         if mailsession is None:
                 mailsession = smtplib.SMTP(config.smtphost, config.smtpport)
                 if config.useTLS:
@@ -206,6 +216,7 @@ def sendmail(receiver, subject, content, sendAsHtml, link):
         mailsession.sendmail(config.sender, receiver.split(','), mail.as_string())
 
 
+# returns a list of all content that is stored locally for a specific site
 def getFileContents(shortname):
         result = []
         for f in os.listdir('.'):
@@ -216,6 +227,7 @@ def getFileContents(shortname):
         return result
 
 
+# updates list of content that is stored locally for a specific site
 def storeFileContents(shortname, parseResult):
         for f in os.listdir('.'):
                 if f.startswith(shortname + '.') and f.endswith('.txt'):
@@ -231,18 +243,21 @@ def storeFileContents(shortname, parseResult):
 
 def pollWebsites():
 
+        # parse existing feed or create a new one
         if config.enableRSSFeed:
                 if os.path.isfile(config.rssfile):
                         feedXML = etree.parse(config.rssfile)
                 else:
                         feedXML = etree.parse(io.StringIO(emptyfeed))
 
+        # start polling sites
         for site in config.sites:
 
                 print('polling site [' + site['shortname'] + '] ...')
                 parseResult = parseSite(site)
                 receiver = site.get('receiver', config.receiver)
 
+                # if something went wrong, notify the user
                 if parseResult['warning']:
                         subject = '[' + site['shortname'] + '] WARNING'
                         print('WARNING: ' + parseResult['warning'])
@@ -250,7 +265,7 @@ def pollWebsites():
                                 sendmail(receiver, subject, parseResult['warning'], False, None)
                         if config.enableRSSFeed:
                                 feedXML.xpath('//channel')[0].append(genFeedItem(subject, parseResult['warning'], site['uri'], 0))
-                else:
+                else: # otherwise, check which parts of the site were updated
                         changes = 0
                         fileContents = getFileContents(site['shortname'])
                         i = 0
@@ -272,7 +287,7 @@ def pollWebsites():
                                 storeFileContents(site['shortname'], parseResult)
                                 print('        ' + str(changes) + ' updates')
  
-
+        # store feed
         if config.enableRSSFeed:
                 for o in feedXML.xpath('//channel/item[position()<last()-' + str(config.maxFeeds - 1) + ']'):
                         o.getparent().remove(o)
