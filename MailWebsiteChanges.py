@@ -67,7 +67,8 @@ def parseSite(site):
         enc = site.get('encoding', defaultEncoding)
 
         contentxpath = site.get('contentxpath', '')
-        if contentxpath == '' and site.get('contentcss', '') != '': # CSS
+        if contentxpath == '' and site.get('contentcss', '') != '':
+                # CSS
                 contentxpath = GenericTranslator().css_to_xpath(site.get('contentcss'))
         titlexpath = site.get('titlexpath', '')
         if titlexpath == '' and site.get('titlecss', '') != '':
@@ -75,10 +76,12 @@ def parseSite(site):
 
         try:
 
-                if uri.startswith(cmdscheme): # run command and retrieve output
+                if uri.startswith(cmdscheme):
+                        # run command and retrieve output
                         process = subprocess.Popen(uri[len(cmdscheme):], stdout=subprocess.PIPE, shell=True, close_fds=True)
                         file = process.stdout
-                else: # open website
+                else:
+                        # open website
                         file = urllib.request.urlopen(uri)
 
 
@@ -265,7 +268,8 @@ def pollWebsites():
                                 sendmail(receiver, subject, parseResult['warning'], False, None)
                         if config.enableRSSFeed:
                                 feedXML.xpath('//channel')[0].append(genFeedItem(subject, parseResult['warning'], site['uri'], 0))
-                else: # otherwise, check which parts of the site were updated
+                else:
+                        # otherwise, check which parts of the site were updated
                         changes = 0
                         fileContents = getFileContents(site['shortname'])
                         i = 0
