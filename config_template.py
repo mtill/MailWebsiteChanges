@@ -1,5 +1,8 @@
 import os.path
 
+# Copyright: (2013-2014) Michael Till Beck <Debianguru@gmx.de>
+# License: GPL-2.0+
+
 #We collect xpath snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!
 
 sites = [

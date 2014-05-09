@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+# Copyright: (2013-2014) Michael Till Beck <Debianguru@gmx.de>
+# License: GPL-2.0+
+
 import urllib.request, urllib.error, urllib.parse
 import urllib.parse
 from lxml import etree

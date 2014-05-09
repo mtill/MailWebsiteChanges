@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+# Copyright: (2013-2014) Michael Till Beck <Debianguru@gmx.de>
+# License: GPL-2.0+
+
 import http.server
 import socketserver
 import importlib
