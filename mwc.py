@@ -38,7 +38,7 @@ emptyfeed = """<?xml version="1.0"?>
  <channel>
   <title>MailWebsiteChanges Feed</title>
   <link>https://github.com/Debianguru/MailWebsiteChanges</link>
-  <description>The MailWebsiteChanges Feed</description>
+  <description>MailWebsiteChanges Feed</description>
  </channel>
 </rss>"""
 
@@ -311,11 +311,11 @@ if __name__ == "__main__":
         try:
                 opts, args = getopt.getopt(sys.argv[1:], 'hc:d:', ['help', 'config=', 'dry-run='])
         except getopt.GetoptError:
-                print('Usage: MailWebsiteChanges.py --config=config --dry-run=shortname')
+                print('Usage: mwc.py --config=config --dry-run=shortname')
                 sys.exit(1)
         for opt, arg in opts:
                 if opt == '-h':
-                        print('Usage: MailWebsiteChanges.py --config=config')
+                        print('Usage: mwc.py --config=config')
                         exit()
                 elif opt in ('-c', '--config'):
                         configMod = arg
@@ -337,7 +337,7 @@ if __name__ == "__main__":
                         msg = str(sys.exc_info()[0]) + '\n\n' + traceback.format_exc()
                         print(msg)
                         if config.receiver != '':
-                                sendmail(config.receiver, '[MailWebsiteChanges] Something went wrong ...', msg, False, None)
+                                sendmail(config.receiver, '[mwc] Something went wrong ...', msg, False, None)
 
                 if mailsession:
                         mailsession.quit()

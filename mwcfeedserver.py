@@ -9,21 +9,25 @@ import importlib
 import sys
 import getopt
 
+bind = 'localhost'
 port = 8000
 configMod = 'config'
 
 
 try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hc:p:', ['help', 'config=', 'port='])
+        opts, args = getopt.getopt(sys.argv[1:], 'hc:b:p:', ['help', 'config=', 'bind=', 'port='])
 except getopt.GetoptError:
         print('Usage: FeedServer.py --config=config --port=8000')
         sys.exit(1)
+
 for opt, arg in opts:
         if opt == '-h':
-                print('Usage: FeedServer.py --config=config --port=8000')
+                print('Usage: FeedServer.py --config=config --bind=localhost --port=8000')
                 exit()
         elif opt in ('-c', '--config'):
                 configMod = arg
+        elif opt in ('-b', '--bind'):
+                bind = arg
         elif opt in ('-p', '--port'):
                 port = int(arg)
 
@@ -32,8 +36,8 @@ config = importlib.import_module(configMod)
 
 handler = http.server.SimpleHTTPRequestHandler
 
-httpd = socketserver.TCPServer(('', port), handler)
+httpd = socketserver.TCPServer((bind, port), handler)
 
-print('Listening on port ' + str(port))
+print('Bond to ' + bind + ', listening on port ' + str(port))
 httpd.serve_forever()
 

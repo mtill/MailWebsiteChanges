@@ -48,7 +48,7 @@ smtpusername = sender
 smtppwd = 'mypassword'
 receiver = 'me2@mymail.com'
 
-os.chdir('/path/to/data/directory')
+os.chdir('/var/cache/mwc')
 
 enableRSSFeed = True
 rssfile = 'feed.xml'
