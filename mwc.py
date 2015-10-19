@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# Copyright: (2013-2014) Michael Till Beck <Debianguru@gmx.de>
+# Copyright: (2013-2015) Michael Till Beck <Debianguru@gmx.de>
 # License: GPL-2.0+
 
 import urllib.request, urllib.error, urllib.parse
@@ -32,7 +32,7 @@ config = None
 defaultEncoding = 'utf-8'
 maxTitleLength = 150
 
-# this is how an empty feed looks like
+# this is how an empty RSS feed looks like
 emptyfeed = """<?xml version="1.0"?>
 <rss version="2.0">
  <channel>
@@ -52,6 +52,8 @@ mailsession = None
 # translates all relative URIs found in trees to absolute URIs
 def toAbsoluteURIs(trees, baseuri):
         for tree in trees:
+                if isinstance(tree, str):
+                        continue
                 for uriAttribute in uriAttributes:
                         tags = tree.xpath(uriAttribute[0])
                         for tag in tags:
@@ -126,8 +128,14 @@ def parseSite(site):
                                 if len(titleresult) == 0:
                                         titleresult = contentresult
 
-                        contents = [etree.tostring(s, encoding=defaultEncoding, pretty_print=True).decode(defaultEncoding) for s in contentresult]
-                        titles = [getSubject(' '.join(s.xpath('.//text()'))) for s in titleresult]
+                        if isinstance(contentresult, str):
+                                contents = contentresult
+                        else:
+                                contents = [etree.tostring(s, encoding=defaultEncoding, pretty_print=True).decode(defaultEncoding) for s in contentresult]
+                        if isinstance(titleresult, str):
+                                titles = getSubject(titleresult)
+                        else:
+                                titles = [getSubject(' '.join(s.xpath('.//text()'))) for s in titleresult]
 
         except IOError as e:
                 warning = 'WARNING: could not open URL; maybe content was moved?\n\n' + str(e)
