@@ -129,11 +129,11 @@ def parseSite(site):
                                         titleresult = contentresult
 
                         if isinstance(contentresult, str):
-                                contents = contentresult
+                                contents = [contentresult]
                         else:
                                 contents = [etree.tostring(s, encoding=defaultEncoding, pretty_print=True).decode(defaultEncoding) for s in contentresult]
                         if isinstance(titleresult, str):
-                                titles = getSubject(titleresult)
+                                titles = [getSubject(titleresult)]
                         else:
                                 titles = [getSubject(' '.join(s.xpath('.//text()'))) for s in titleresult]
 
