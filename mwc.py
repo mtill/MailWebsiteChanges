@@ -235,8 +235,8 @@ def getFileContents(shortname):
         result = []
         for f in os.listdir('.'):
                 if f.startswith(shortname + '.') and f.endswith('.txt'):
-                        file = open(f, 'r')
-                        result.append(file.read())
+                        file = open(f, 'rb')
+                        result.append(file.read().decode('utf-8'))
                         file.close()
         return result
 
@@ -249,8 +249,8 @@ def storeFileContents(shortname, parseResult):
 
         i = 0
         for c in parseResult['contents']:
-                file = open(shortname + '.' + str(i) + '.txt', 'w')
-                file.write(c)
+                file = open(shortname + '.' + str(i) + '.txt', 'wb')
+                file.write(c.encode('utf-8'))
                 file.close()
                 i += 1
 
