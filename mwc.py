@@ -70,6 +70,7 @@ def parseSite(site):
         contentregex = site.get('contentregex', '')
         titleregex = site.get('titleregex', '')
         enc = site.get('encoding', defaultEncoding)
+        useragent = site.get('useragent', '')
 
         contentxpath = site.get('contentxpath', '')
         if contentxpath == '' and site.get('contentcss', '') != '':
@@ -85,6 +86,10 @@ def parseSite(site):
                         # run command and retrieve output
                         process = subprocess.Popen(uri[len(cmdscheme):], stdout=subprocess.PIPE, shell=True, close_fds=True)
                         file = process.stdout
+                if useragent == 'Firefox':
+                        file = urllib.request.urlopen(urllib.request.Request(uri,headers={'User-Agent':' Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'}))
+                if useragent != '':
+                        file = urllib.request.urlopen(urllib.request.Request(uri,headers=useragent))
                 else:
                         # open website
                         file = urllib.request.urlopen(uri)

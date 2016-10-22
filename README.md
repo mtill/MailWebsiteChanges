@@ -55,6 +55,8 @@ sites = [
      Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
    * <b>receiver</b> (optional)
      Overwrites global receiver specification.
+   * <b>useragent</b> (optional)
+     You can use it to set custom user-agent. For ex.: `'useragent': {'User-Agent':' Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'},` or preset `'useragent': 'Firefox',`.
 
 
  * We collect some XPath/CSS snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!
