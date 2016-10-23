@@ -31,7 +31,8 @@ sites = [
           {'shortname': 'mywebsite3',
            'uri': 'http://www.mywebsite3.com/info',
            'type': 'text',
-           'contentregex': 'Version\"\:\d*\.\d*'}
+           'contentregex': 'Version\"\:\d*\.\d*',
+           'user-agent': 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0'}
 
 ]
 </code>
@@ -53,8 +54,11 @@ sites = [
      Regular expression. If XPath/CSS selector is defined, the regular expression is applied afterwards.
    * <b>encoding</b> (optional; default: 'utf-8')  
      Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
-   * <b>receiver</b> (optional)
-     Overwrites global receiver specification.
+   * <b>receiver</b> (optional)  
+     Overrides global receiver specification.
+   * <b>user-agent</b> (optional)  
+     Defines the user agent string, e.g.,  
+     'user-agent': 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0'
 
 
  * We collect some XPath/CSS snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!

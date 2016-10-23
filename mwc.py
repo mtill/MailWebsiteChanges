@@ -87,7 +87,10 @@ def parseSite(site):
                         file = process.stdout
                 else:
                         # open website
-                        file = urllib.request.urlopen(uri)
+                        req = urllib.request.Request(uri)
+                        if 'user-agent' in site:
+                            req.add_header('User-Agent', site['user-agent'])
+                        file = urllib.request.urlopen(req)
 
 
                 if contenttype == 'text' or (contentxpath == '' and titlexpath == ''):
