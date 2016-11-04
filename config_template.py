@@ -44,6 +44,7 @@ sender = 'me@mymail.com'
 smtphost = 'mysmtpprovider.com'
 useTLS = True
 smtpport = 587
+login = True
 smtpusername = sender
 smtppwd = 'mypassword'
 receiver = 'me2@mymail.com'

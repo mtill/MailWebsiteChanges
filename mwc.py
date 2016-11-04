@@ -228,7 +228,8 @@ def sendmail(receiver, subject, content, sendAsHtml, link):
                 if config.useTLS:
                         mailsession.ehlo()
                         mailsession.starttls()
-                mailsession.login(config.smtpusername, config.smtppwd)
+                if config.login:
+                        mailsession.login(config.smtpusername, config.smtppwd)
 
         mailsession.sendmail(config.sender, receiver.split(','), mail.as_string())
 
