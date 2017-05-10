@@ -90,6 +90,8 @@ def parseSite(site):
                         req = urllib.request.Request(uri)
                         if 'user-agent' in site:
                             req.add_header('User-Agent', site['user-agent'])
+                        if 'accept' in site:
+                            req.add_header('Accept', site['accept'])
                         file = urllib.request.urlopen(req)
 
 

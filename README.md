@@ -59,6 +59,9 @@ sites = [
    * <b>user-agent</b> (optional)  
      Defines the user agent string, e.g.,  
      'user-agent': 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0'
+   * <b>accept</b> (optional)  
+     Defines the accept string, e.g.,  
+     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
 
 
  * We collect some XPath/CSS snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!

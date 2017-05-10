@@ -14,6 +14,8 @@ sites = [
            'contentxpath': '//div',
            'titleregex': '',
            'contentregex': '',
+           'user-agent': 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0',
+           'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
            'encoding': 'utf-8'},
 
           {'shortname': 'mywebsite2',
