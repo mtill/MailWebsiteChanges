@@ -54,6 +54,8 @@ sites = [
      Regular expression. If XPath/CSS selector is defined, the regular expression is applied afterwards.
    * <b>encoding</b> (optional; default: 'utf-8')  
      Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
+   * <b>splitregex</b> (optional)  
+     only works if type is set to 'text'; defines that content should be split to chunks based on the defined regex expression.
    * <b>receiver</b> (optional)  
      Overrides global receiver specification.
    * <b>user-agent</b> (optional)  

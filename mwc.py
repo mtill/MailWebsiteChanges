@@ -69,6 +69,7 @@ def parseSite(site):
         contenttype = site.get('type', 'html')
         contentregex = site.get('contentregex', '')
         titleregex = site.get('titleregex', '')
+        splitregex = site.get('splitregex', '')
         enc = site.get('encoding', defaultEncoding)
 
         contentxpath = site.get('contentxpath', '')
@@ -96,7 +97,10 @@ def parseSite(site):
 
 
                 if contenttype == 'text' or (contentxpath == '' and titlexpath == ''):
-                        contents = [file.read().decode(enc)]
+                        thefullcontent = file.read().decode(enc)
+                        contents = [thefullcontent]
+                        if splitregex != '':
+                                contents = thefullcontent.split(splitregex)
                         titles = []
                 else:
                         baseuri = uri
@@ -343,6 +347,7 @@ if __name__ == "__main__":
                         if site['shortname'] == dryrun:
                                 parseResult = parseSite(site)
                                 print(parseResult)
+                                print(str(len(parseResult['contents'])) + " results")
                                 break
         else:
                 try:
