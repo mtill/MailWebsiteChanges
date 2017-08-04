@@ -14,8 +14,6 @@ sites = [
            'contentxpath': '//div',
            'titleregex': '',
            'contentregex': '',
-           'user-agent': 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0',
-           'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
            'encoding': 'utf-8'},
 
           {'shortname': 'mywebsite2',
@@ -42,6 +40,7 @@ sites = [
 subjectPostfix = 'A website has been updated!'
 
 enableMailNotifications = True
+maxMailsPerSession = -1
 sender = 'me@mymail.com'
 smtphost = 'mysmtpprovider.com'
 useTLS = True
@@ -50,7 +49,7 @@ smtpusername = sender
 smtppwd = 'mypassword'
 receiver = 'me2@mymail.com'
 
-os.chdir('/var/cache/mwc')
+os.chdir('/automnt/speedport/server-data/MailWebsiteChanges-data')
 
 enableRSSFeed = True
 rssfile = 'feed.xml'

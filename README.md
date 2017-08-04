@@ -81,6 +81,7 @@ sites = [
 <pre>
 <code>
 enableMailNotifications = True   #enable/disable notification messages; if set to False, only send error messages
+maxMailsPerSession = -1   #max. number of mails to send per session; ignored when set to -1
 subjectPostfix = 'A website has been updated!'
 
 sender = 'me@mymail.com'

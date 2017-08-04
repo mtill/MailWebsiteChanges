@@ -252,13 +252,13 @@ def getFileContents(shortname):
 
 
 # updates list of content that is stored locally for a specific site
-def storeFileContents(shortname, parseResult):
+def storeFileContents(shortname, contents):
         for f in os.listdir('.'):
                 if f.startswith(shortname + '.') and f.endswith('.txt'):
                         os.remove(f)
 
         i = 0
-        for c in parseResult['contents']:
+        for c in contents:
                 file = open(shortname + '.' + str(i) + '.txt', 'wb')
                 file.write(c.encode('utf-8'))
                 file.close()
@@ -275,7 +275,11 @@ def pollWebsites():
                         feedXML = etree.parse(io.StringIO(emptyfeed))
 
         # start polling sites
+        sessionContents = []
+        mailsSent = 0
         for site in config.sites:
+                if config.maxMailsPerSession != -1 and mailsSent >= config.maxMailsPerSession:
+                        break
 
                 print('polling site [' + site['shortname'] + '] ...')
                 parseResult = parseSite(site)
@@ -287,6 +291,7 @@ def pollWebsites():
                         print('WARNING: ' + parseResult['warning'])
                         if config.enableMailNotifications:
                                 sendmail(receiver, subject, parseResult['warning'], False, None)
+                                mailsSent = mailsSent + 1
                         if config.enableRSSFeed:
                                 feedXML.xpath('//channel')[0].append(genFeedItem(subject, parseResult['warning'], site['uri'], 0))
                 else:
@@ -295,13 +300,18 @@ def pollWebsites():
                         fileContents = getFileContents(site['shortname'])
                         i = 0
                         for content in parseResult['contents']:
+                                if config.maxMailsPerSession != -1 and mailsSent >= config.maxMailsPerSession:
+                                        break
+
                                 if content not in fileContents:
                                         changes += 1
+                                        sessionContents.append(content)
 
                                         subject = '[' + site['shortname'] + '] ' + parseResult['titles'][i]
                                         print('    ' + subject)
                                         if config.enableMailNotifications and len(fileContents) > 0:
                                                 sendmail(receiver, subject, content, (site.get('type', 'html') == 'html'), site['uri'])
+                                                mailsSent = mailsSent + 1
 
                                         if config.enableRSSFeed:
                                                 feedXML.xpath('//channel')[0].append(genFeedItem(subject, content, site['uri'], changes))
@@ -309,7 +319,7 @@ def pollWebsites():
 
 
                         if changes > 0:
-                                storeFileContents(site['shortname'], parseResult)
+                                storeFileContents(site['shortname'], sessionContents)
                                 print('        ' + str(changes) + ' updates')
  
         # store feed
