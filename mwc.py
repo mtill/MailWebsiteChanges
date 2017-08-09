@@ -64,6 +64,7 @@ def toAbsoluteURIs(trees, baseuri):
 
 
 def parseSite(site):
+    global defaultEncoding
     file, content, titles, warning = None, None, None, None
 
     uri = site['uri']
@@ -212,7 +213,7 @@ def genFeedItem(subject, content, link, change):
 
 # sends mail notification
 def sendmail(receiver, subject, content, sendAsHtml, link):
-    global mailsession
+    global mailsession, defaultEncoding
 
     if sendAsHtml:
         baseurl = None
@@ -243,17 +244,21 @@ def sendmail(receiver, subject, content, sendAsHtml, link):
 
 # returns a list of all content that is stored locally for a specific site
 def getFileContents(shortname):
+    global defaultEncoding
+
     result = []
     for f in os.listdir('.'):
         if f.startswith(shortname + '.') and f.endswith('.txt'):
             file = open(f, 'rb')
-            result.append(file.read().decode('utf-8', errors='ignore'))
+            result.append(file.read().decode(defaultEncoding, errors='ignore'))
             file.close()
     return result
 
 
 # updates list of content that is stored locally for a specific site
 def storeFileContents(shortname, contents):
+    global defaultEncoding
+
     for f in os.listdir('.'):
         if f.startswith(shortname + '.') and f.endswith('.txt'):
             os.remove(f)
@@ -261,12 +266,13 @@ def storeFileContents(shortname, contents):
     i = 0
     for c in contents:
         file = open(shortname + '.' + str(i) + '.txt', 'wb')
-        file.write(c.encode('utf-8'))
+        file.write(c.encode(defaultEncoding))
         file.close()
         i += 1
 
 
 def pollWebsites():
+    global defaultEncoding
 
     # parse existing feed or create a new one
     if config.enableRSSFeed:
