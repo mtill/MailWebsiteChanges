@@ -10,6 +10,7 @@ from lxml import etree
 from cssselect import GenericTranslator
 import re
 import io
+import hashlib
 
 import smtplib
 from email.mime.text import MIMEText
@@ -243,32 +244,24 @@ def sendmail(receiver, subject, content, sendAsHtml, link):
 
 
 # returns a list of all content that is stored locally for a specific site
-def getFileContents(shortname):
-    global defaultEncoding
+def getStoredHashes(shortname):
 
     result = []
-    for f in os.listdir('.'):
-        if f.startswith(shortname + '.') and f.endswith('.txt'):
-            file = open(f, 'rb')
-            result.append(file.read().decode(defaultEncoding, errors='ignore'))
-            file.close()
+    filename = shortname + ".txt"
+    if os.path.exists(filename):
+        with open(filename, 'r') as file:
+            for line in file:
+                result.append(line.rstrip())
+
     return result
 
 
 # updates list of content that is stored locally for a specific site
-def storeFileContents(shortname, contents):
-    global defaultEncoding
+def storeHashes(shortname, contentHashes):
 
-    for f in os.listdir('.'):
-        if f.startswith(shortname + '.') and f.endswith('.txt'):
-            os.remove(f)
-
-    i = 0
-    for c in contents:
-        file = open(shortname + '.' + str(i) + '.txt', 'wb')
-        file.write(c.encode(defaultEncoding))
-        file.close()
-        i += 1
+    with open(shortname + '.txt', 'w') as file:
+        for h in contentHashes:
+            file.write(h + "\n")
 
 
 def pollWebsites():
@@ -285,7 +278,7 @@ def pollWebsites():
     mailsSent = 0
     for site in config.sites:
         print('polling site [' + site['shortname'] + '] ...')
-        sessionContents = []
+        sessionHashes = []
         parseResult = parseSite(site)
         receiver = site.get('receiver', config.receiver)
 
@@ -302,14 +295,15 @@ def pollWebsites():
         else:
             # otherwise, check which parts of the site were updated
             changes = 0
-            fileContents = getFileContents(site['shortname'])
+            fileContents = getStoredHashes(site['shortname'])
             i = 0
             for content in parseResult['contents']:
 
-                if content not in fileContents:
+                contenthash = hashlib.md5(content.encode(defaultEncoding)).hexdigest()
+                if contenthash not in fileContents:
                     if config.maxMailsPerSession == -1 or mailsSent < config.maxMailsPerSession:
                         changes += 1
-                        sessionContents.append(content)
+                        sessionHashes.append(contenthash)
 
                         subject = '[' + site['shortname'] + '] ' + parseResult['titles'][i]
                         print('    ' + subject)
@@ -320,13 +314,13 @@ def pollWebsites():
                         if config.enableRSSFeed:
                             feedXML.xpath('//channel')[0].append(genFeedItem(subject, content, site['uri'], changes))
                 else:
-                    sessionContents.append(content)
+                    sessionHashes.append(contenthash)
 
                 i += 1
 
 
             if changes > 0:
-                storeFileContents(site['shortname'], sessionContents)
+                storeHashes(site['shortname'], sessionHashes)
                 print('        ' + str(changes) + ' updates')
 
     # store feed
