@@ -295,19 +295,19 @@ def pollWebsites():
         else:
             # otherwise, check which parts of the site were updated
             changes = 0
-            fileContents = getStoredHashes(site['shortname'])
+            fileHashes = getStoredHashes(site['shortname'])
             i = 0
             for content in parseResult['contents']:
 
                 contenthash = hashlib.md5(content.encode(defaultEncoding)).hexdigest()
-                if contenthash not in fileContents:
+                if contenthash not in fileHashes:
                     if config.maxMailsPerSession == -1 or mailsSent < config.maxMailsPerSession:
                         changes += 1
                         sessionHashes.append(contenthash)
 
                         subject = '[' + site['shortname'] + '] ' + parseResult['titles'][i]
                         print('    ' + subject)
-                        if config.enableMailNotifications and len(fileContents) > 0:
+                        if config.enableMailNotifications and len(fileHashes) > 0:
                             sendmail(receiver, subject, content, (site.get('type', 'html') == 'html'), site['uri'])
                             mailsSent = mailsSent + 1
 
