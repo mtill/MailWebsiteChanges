@@ -19,13 +19,13 @@ Some examples:
 <code>
 sites = [
 
-         {'name': 'osmand',
+         {'name': 'example-webpage',
           'parsers': [uri(uri='https://example-webpage.com/test', contenttype='html'),
                       xpath(contentxpath='//div[contains(concat(\' \', normalize-space(@class), \' \'), \' package-version-header \')]')
                      ]
          },
 
-         {'name': 'dkb',
+         {'name': 'my-script',
           'parsers': [command(command='/home/user/script.sh', contenttype='text'),
                       regex(contentregex='^.*$')
                      ]
