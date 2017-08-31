@@ -61,7 +61,7 @@ sites = [
 
    * <b>command</b>  
      the command
-   * <b>contenttype</b> (optional; default: 'html')  
+   * <b>contenttype</b> (optional; default: 'text')  
      content type, e.g., 'xml'/'html'/'text'.
    * <b>enc</b> (optional; default: 'utf-8')  
      Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
