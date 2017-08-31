@@ -63,26 +63,26 @@ def genFeedItem(subject, content, link, change):
 
 
 # sends mail notification
-def sendmail(receiver, subject, content, sendAsHtml, link, enc=None):
+def sendmail(receiver, subject, content, sendAsHtml, link, encoding=None):
     global mailsession, defaultEncoding
 
-    if enc is None:
-        enc = defaultEncoding
+    if encoding is None:
+        encoding = defaultEncoding
 
     if sendAsHtml:
         baseurl = None
         if link != None:
             content = '<p><a href="' + link + '">' + subject + '</a></p>\n' + content
             baseurl = urljoin(link, '/')
-        mail = MIMEText('<html><head><title>' + subject + '</title>' + ('<base href="' + baseurl + '">' if baseurl else '') + '</head><body>' + content + '</body></html>', 'html', enc)
+        mail = MIMEText('<html><head><title>' + subject + '</title>' + ('<base href="' + baseurl + '">' if baseurl else '') + '</head><body>' + content + '</body></html>', 'html', encoding)
     else:
         if link != None:
             content = link + '\n\n' + content
-        mail = MIMEText(content, 'text', enc)
+        mail = MIMEText(content, 'text', encoding)
 
     mail['From'] = config.sender
     mail['To'] = receiver
-    mail['Subject'] = Header(subject, enc)
+    mail['Subject'] = Header(subject, encoding)
 
     # initialize session once, not each time this method gets called
     if mailsession is None:
@@ -167,7 +167,7 @@ def pollWebsites():
                     print('    ' + subject)
                     if config.enableMailNotifications and len(fileHashes) > 0:
                         sendAsHtml = (content.contenttype == 'html')
-                        sendmail(receiver=receiver, subject=subject, content=content.content, sendAsHtml=sendAsHtml, link=content.uri, enc=content.encoding)
+                        sendmail(receiver=receiver, subject=subject, content=content.content, sendAsHtml=sendAsHtml, link=content.uri, encoding=content.encoding)
                         mailsSent = mailsSent + 1
 
                     if config.enableRSSFeed:

@@ -65,10 +65,10 @@ def toAbsoluteURIs(trees, baseuri):
 
 
 class URLReceiver(Receiver):
-    def __init__(self, uri, contenttype='html', enc='utf-8', userAgent=None, accept=None):
+    def __init__(self, uri, contenttype='html', encoding='utf-8', userAgent=None, accept=None):
         super().__init__(uri)
         self.contenttype = contenttype
-        self.enc = enc
+        self.encoding = encoding
         self.userAgent = userAgent
         self.accept = accept
 
@@ -85,16 +85,16 @@ class URLReceiver(Receiver):
             req.add_header('Accept', self.accept)
 
         with urllib.request.urlopen(req) as file:
-            filecontent = file.read().decode(self.enc, errors='ignore')
-            contentList.append(Content(uri=self.uri, encoding=self.enc, title=None, content=filecontent, contenttype=self.contenttype))
+            filecontent = file.read().decode(self.encoding, errors='ignore')
+            contentList.append(Content(uri=self.uri, encoding=self.encoding, title=None, content=filecontent, contenttype=self.contenttype))
 
         return contentList
 
 
 class CommandReceiver(Receiver):
-    def __init__(self, command, contenttype='text', enc='utf-8'):
+    def __init__(self, command, contenttype='text', encoding='utf-8'):
         super().__init__(command)
-        self.enc = enc
+        self.encoding = encoding
         self.command = command
         self.contenttype = contenttype
 
@@ -106,13 +106,13 @@ class CommandReceiver(Receiver):
         # run command and retrieve output
         process = subprocess.Popen(self.command, stdout=subprocess.PIPE, shell=True, close_fds=True)
         file = process.stdout
-        result = file.read().decode(self.enc, errors='ignore')
+        result = file.read().decode(self.encoding, errors='ignore')
         file.close()
 
         if process.wait() != 0:
             raise Exception("process terminated with an error")
 
-        contentList.append(Content(uri=self.uri, encoding=self.enc, title=None, content=result, contenttype=self.contenttype))
+        contentList.append(Content(uri=self.uri, encoding=self.encoding, title=None, content=result, contenttype=self.contenttype))
         return contentList
 
 
