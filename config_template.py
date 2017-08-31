@@ -1,43 +1,38 @@
-import os.path
-
 # Copyright: (2013-2014) Michael Till Beck <Debianguru@gmx.de>
 # License: GPL-2.0+
 
 #We collect xpath snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!
 
+
+
+from mwctools import URLReceiver as uri
+from mwctools import CommandReceiver as command
+from mwctools import XPathParser as xpath
+from mwctools import CSSParser as css
+from mwctools import RegExParser as regex
+from mwctools import Content
+from mwctools import Parser
+
+import os.path
+
+
 sites = [
 
-          {'shortname': 'mywebsite1',
-           'uri': 'http://www.mywebsite1.com/info',
-           'type': 'html',
-           'titlexpath': '//h1',
-           'contentxpath': '//div',
-           'titleregex': '',
-           'contentregex': '',
-           'user-agent': 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0',
-           'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-           'encoding': 'utf-8'},
+         {'name': 'osmand',
+          'parsers': [uri(uri='https://example-webpage.com/test', contenttype='html'),
+                      xpath(contentxpath='//div[contains(concat(\' \', normalize-space(@class), \' \'), \' package-version-header \')]')
+                     ]
+         },
 
-          {'shortname': 'mywebsite2',
-           'uri': 'http://www.mywebsite2.com/info',
-           'type': 'html',
-           'contentxpath': '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' news-list-container \')]',
-           'regex': '',
-           'encoding': 'utf-8'},
-
-          {'shortname': 'mywebsite3',
-           'uri': 'http://www.mywebsite3.com/info',
-           'type': 'text',
-           'contentxpath': '',
-           'contentregex': 'Version\"\:\d*\.\d*',
-           'encoding': 'utf-8'},
-
-          {'shortname': 'lscmd',
-           'uri': 'cmd://ls -l /home/pi',
-           'contentregex': '.*Desktop.*'
-          }
+         {'name': 'dkb',
+          'parsers': [command(command='/home/user/script.sh', contenttype='text'),
+                      regex(contentregex='^.*$')
+                     ]
+         }
 
 ]
+
+#os.chdir('/path-to-data-dir/MailWebsiteChanges-data')
 
 subjectPostfix = 'A website has been updated!'
 

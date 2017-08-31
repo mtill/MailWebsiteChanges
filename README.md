@@ -19,20 +19,17 @@ Some examples:
 <code>
 sites = [
 
-          {'shortname': 'mywebsite1',
-           'uri': 'http://www.mywebsite1.com/info',
-           'contentcss': 'div'},
+         {'name': 'osmand',
+          'parsers': [uri(uri='https://example-webpage.com/test', contenttype='html'),
+                      xpath(contentxpath='//div[contains(concat(\' \', normalize-space(@class), \' \'), \' package-version-header \')]')
+                     ]
+         },
 
-          {'shortname': 'mywebsite2',
-           'uri': 'http://www.mywebsite2.com/info',
-           'contentxpath': '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' news-list-container \')]',
-           'titlexpath': '//title'},
-
-          {'shortname': 'mywebsite3',
-           'uri': 'http://www.mywebsite3.com/info',
-           'type': 'text',
-           'contentregex': 'Version\"\:\d*\.\d*',
-           'user-agent': 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0'}
+         {'name': 'dkb',
+          'parsers': [command(command='/home/user/script.sh', contenttype='text'),
+                      regex(contentregex='^.*$')
+                     ]
+         }
 
 ]
 </code>
@@ -40,31 +37,55 @@ sites = [
 
  * parameters:
 
-   * <b>shortname</b>  
-     short name of the entry, used as an identifier when sending email notifications
-   * <b>uri</b>  
-     URI of the website; If the scheme of the uri is 'cmd://', the string is interpreted as a command and the standard output (stdout) is parsed.
-   * <b>type</b> (optional; default: 'html')  
-     content type, e.g., 'xml'/'html'/'text'.
-   * <b>contentxpath</b> / <b>titlexpath</b> (optional)  
-     XPath expression for the content/title sections to extract. If you prefer, you could use contentcss/titlecss instead.
-   * <b>contentcss</b> / <b>titlecss</b> (optional)  
-     CSS expression for the content/title sections to extract. This is ignored if there is a corresponding XPath definition.
-   * <b>contentregex</b> / <b>titleregex</b> (optional)  
-     Regular expression. If XPath/CSS selector is defined, the regular expression is applied afterwards.
-   * <b>encoding</b> (optional; default: 'utf-8')  
-     Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
-   * <b>splitregex</b> (optional)  
-     only works if type is set to 'text'; defines that content should be split to chunks based on the defined regex expression.
+   * <b>name</b>  
+     name of the entry, used as an identifier when sending email notifications
    * <b>receiver</b> (optional)  
      Overrides global receiver specification.
-   * <b>user-agent</b> (optional)  
+
+ * parameters for the URL receiver:
+
+   * <b>uri</b>  
+     URI of the website
+   * <b>contenttype</b> (optional; default: 'html')  
+     content type, e.g., 'xml'/'html'/'text'.
+   * <b>enc</b> (optional; default: 'utf-8')  
+     Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
+   * <b>userAgent</b> (optional)  
      Defines the user agent string, e.g.,  
-     'user-agent': 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0'
+     'userAgent': 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0'
    * <b>accept</b> (optional)  
      Defines the accept string, e.g.,  
      'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
 
+ * parameters for the Command receiver
+
+   * <b>command</b>  
+     the command
+   * <b>contenttype</b> (optional; default: 'html')  
+     content type, e.g., 'xml'/'html'/'text'.
+   * <b>enc</b> (optional; default: 'utf-8')  
+     Character encoding of the website, e.g., 'utf-8' or 'iso-8859-1'.
+
+ * parameters for the XPath parser:
+
+   * <b>contentxpath</b>  
+     XPath expression for the content sections to extract
+   * <b>titlexpath</b> (optional)  
+     XPath expression for the title sections to extract
+
+ * parameters for the CSS parser:
+
+   * <b>contentcss</b>  
+     CSS expression for the content sections to extract
+   * <b>titlecss</b> (optional)  
+     CSS expression for the title sections to extract
+
+ * parameters for the RegEx parser:
+
+   * <b>contentregex</b>  
+     Regular expression for content parsing
+   * <b>titleregex</b> (optional)  
+     Regular expression for title parsing
 
  * We collect some XPath/CSS snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!
 
