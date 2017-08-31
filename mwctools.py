@@ -3,6 +3,7 @@ import urllib.parse
 import subprocess
 
 from lxml import etree
+from cssselect import GenericTranslator
 import re
 
 
@@ -44,7 +45,7 @@ def getSubject(textContent):
     global maxTitleLength
     
     if textContent == None or textContent == '':
-        return config.subjectPostfix
+        return 'A website has been updated'
     textContent = re.sub(' +', ' ', re.sub('\s', ' ', textContent)).strip()
     return (textContent[:maxTitleLength] + ' [..]') if len(textContent) > maxTitleLength else textContent
 
@@ -192,7 +193,7 @@ class CSSParser(Parser):
 
     # input: [Content], output: [Content]
     def performAction(self, contentList):
-        return self.xpathparser.parse(contentList)
+        return self.xpathparser.performAction(contentList)
 
 
 class RegExParser(Parser):

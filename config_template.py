@@ -18,7 +18,13 @@ import os.path
 
 sites = [
 
-         {'name': 'example-webpage',
+         {'name': 'example-css',
+          'parsers': [uri(uri='https://github.com/mtill', contenttype='html'),
+                      css(contentcss='div')
+                     ]
+         },
+
+         {'name': 'example-xpath',
           'parsers': [uri(uri='https://example-webpage.com/test', contenttype='html'),
                       xpath(contentxpath='//div[contains(concat(\' \', normalize-space(@class), \' \'), \' package-version-header \')]')
                      ]
@@ -34,9 +40,7 @@ sites = [
 
 #os.chdir('/path-to-data-dir/MailWebsiteChanges-data')
 
-subjectPostfix = 'A website has been updated!'
-
-enableMailNotifications = True
+enableMailNotifications = False
 maxMailsPerSession = -1
 sender = 'me@mymail.com'
 smtphost = 'mysmtpprovider.com'
@@ -46,9 +50,7 @@ smtpusername = sender
 smtppwd = 'mypassword'
 receiver = 'me2@mymail.com'
 
-os.chdir('/var/cache/mwc')
-
-enableRSSFeed = True
+enableRSSFeed = False
 rssfile = 'feed.xml'
 maxFeeds = 100
 
