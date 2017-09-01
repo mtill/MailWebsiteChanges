@@ -113,7 +113,7 @@ class CommandReceiver(Receiver):
         if process.wait() != 0:
             raise Exception("process terminated with an error")
 
-        contentList.append(Content(uri=self.uri, encoding=self.encoding, title=None, content=result, contenttype=self.contenttype))
+        contentList.append(Content(uri=None, encoding=self.encoding, title=None, content=result, contenttype=self.contenttype))
         return contentList
 
 
