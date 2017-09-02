@@ -38,7 +38,7 @@ sites = [
 
 ]
 
-#os.chdir('/path-to-data-dir/MailWebsiteChanges-data')
+workingDirectory = '/path-to-data-dir/MailWebsiteChanges-data'
 
 enableMailNotifications = False
 maxMailsPerSession = -1

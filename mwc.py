@@ -101,7 +101,7 @@ def getStoredHashes(name):
     result = []
     filename = name + ".txt"
     if os.path.exists(filename):
-        with open(filename, 'r') as file:
+        with open(os.path.join(config.workingDirectory, filename), 'r') as file:
             for line in file:
                 result.append(line.rstrip())
 
@@ -110,7 +110,7 @@ def getStoredHashes(name):
 
 # updates list of content that is stored locally for a specific site
 def storeHashes(name, contentHashes):
-    with open(name + '.txt', 'w') as file:
+    with open(os.path.join(config.workingDirectory, name + '.txt'), 'w') as file:
         for h in contentHashes:
             file.write(h + "\n")
 
