@@ -99,9 +99,9 @@ def sendmail(receiver, subject, content, sendAsHtml, link, encoding=None):
 # returns a list of all content that is stored locally for a specific site
 def getStoredHashes(name):
     result = []
-    filename = name + ".txt"
+    filename = os.path.join(config.workingDirectory, name + ".txt")
     if os.path.exists(filename):
-        with open(os.path.join(config.workingDirectory, filename), 'r') as file:
+        with open(filename, 'r') as file:
             for line in file:
                 result.append(line.rstrip())
 
