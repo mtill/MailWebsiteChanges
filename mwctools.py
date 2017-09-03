@@ -44,8 +44,8 @@ class Content:
 def getSubject(textContent):
     global maxTitleLength
     
-    if textContent is None or textContent == '':
-        return 'A website has been updated'
+    if textContent is None or len(textContent.strip()) == 0:
+        return 'Website has been updated'
     textContent = re.sub(' +', ' ', re.sub('\s', ' ', textContent)).strip()
     return (textContent[:maxTitleLength] + ' [..]') if len(textContent) > maxTitleLength else textContent
 
