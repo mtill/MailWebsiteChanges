@@ -28,7 +28,7 @@ class Receiver(Parser):
 
     # output: [Content]
     def performAction(self):
-        return self.performAction(content=[])
+        return self.performAction(contentList=[])
 
 
 class Content:
@@ -44,7 +44,7 @@ class Content:
 def getSubject(textContent):
     global maxTitleLength
     
-    if textContent == None or textContent == '':
+    if textContent is None or textContent == '':
         return 'A website has been updated'
     textContent = re.sub(' +', ' ', re.sub('\s', ' ', textContent)).strip()
     return (textContent[:maxTitleLength] + ' [..]') if len(textContent) > maxTitleLength else textContent
@@ -85,8 +85,8 @@ class URLReceiver(Receiver):
         if self.accept is not None:
             req.add_header('Accept', self.accept)
 
-        with urllib.request.urlopen(req) as file:
-            filecontent = file.read().decode(self.encoding, errors='ignore')
+        with urllib.request.urlopen(req) as thefile:
+            filecontent = thefile.read().decode(self.encoding, errors='ignore')
             contentList.append(Content(uri=self.uri, encoding=self.encoding, title=None, content=filecontent, contenttype=self.contenttype))
 
         return contentList
@@ -106,9 +106,9 @@ class CommandReceiver(Receiver):
 
         # run command and retrieve output
         process = subprocess.Popen(self.command, stdout=subprocess.PIPE, shell=True, close_fds=True)
-        file = process.stdout
-        result = file.read().decode(self.encoding, errors='ignore')
-        file.close()
+        thefile = process.stdout
+        result = thefile.read().decode(self.encoding, errors='ignore')
+        thefile.close()
 
         if process.wait() != 0:
             raise Exception("process terminated with an error")
@@ -183,7 +183,7 @@ class XPathParser(Parser):
 
 
 class CSSParser(Parser):
-    def __init__(self, contentcss, titlecss=None, contenttype='html'):
+    def __init__(self, contentcss, titlecss=None):
         contentxpath = GenericTranslator().css_to_xpath(contentcss)
         titlexpath = None
         if titlecss is not None:

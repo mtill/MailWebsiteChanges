@@ -71,12 +71,12 @@ def sendmail(receiver, subject, content, sendAsHtml, link, encoding=None):
 
     if sendAsHtml:
         baseurl = None
-        if link != None:
+        if link is not None:
             content = '<p><a href="' + link + '">' + subject + '</a></p>\n' + content
             baseurl = urljoin(link, '/')
         mail = MIMEText('<html><head><title>' + subject + '</title>' + ('<base href="' + baseurl + '">' if baseurl else '') + '</head><body>' + content + '</body></html>', 'html', encoding)
     else:
-        if link != None:
+        if link is not None:
             content = link + '\n\n' + content
         mail = MIMEText(content, 'text', encoding)
 
@@ -101,8 +101,8 @@ def getStoredHashes(name):
     result = []
     filename = os.path.join(config.workingDirectory, name + ".txt")
     if os.path.exists(filename):
-        with open(filename, 'r') as file:
-            for line in file:
+        with open(filename, 'r') as thefile:
+            for line in thefile:
                 result.append(line.rstrip())
 
     return result
@@ -110,9 +110,9 @@ def getStoredHashes(name):
 
 # updates list of content that is stored locally for a specific site
 def storeHashes(name, contentHashes):
-    with open(os.path.join(config.workingDirectory, name + '.txt'), 'w') as file:
+    with open(os.path.join(config.workingDirectory, name + '.txt'), 'w') as thefile:
         for h in contentHashes:
-            file.write(h + "\n")
+            thefile.write(h + "\n")
 
 
 def runParsers(parsers):
@@ -187,9 +187,8 @@ def pollWebsites():
     if config.enableRSSFeed:
         for o in feedXML.xpath('//channel/item[position()<last()-' + str(config.maxFeeds - 1) + ']'):
             o.getparent().remove(o)
-        file = open(rssfile, 'w')
-        file.write(etree.tostring(feedXML, pretty_print=True, xml_declaration=True, encoding=defaultEncoding).decode(defaultEncoding, errors='ignore'))
-        file.close()
+        with open(rssfile, 'w') as thefile:
+            thefile.write(etree.tostring(feedXML, pretty_print=True, xml_declaration=True, encoding=defaultEncoding).decode(defaultEncoding, errors='ignore'))
 
 
 if __name__ == "__main__":
