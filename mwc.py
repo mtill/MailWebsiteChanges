@@ -127,7 +127,7 @@ def pollWebsites():
 
     # parse existing feed or create a new one
     rssfile = config.rssfile
-    if not os.path.isabs(rssfile)
+    if not os.path.isabs(rssfile):
         rssfile = os.path.join(config.workingDirectory, rssfile)
 
     if config.enableRSSFeed:
