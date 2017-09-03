@@ -126,9 +126,13 @@ def pollWebsites():
     global defaultEncoding
 
     # parse existing feed or create a new one
+    rssfile = config.rssfile
+    if not os.path.isabs(rssfile)
+        rssfile = os.path.join(config.workingDirectory, rssfile)
+
     if config.enableRSSFeed:
-        if os.path.isfile(config.rssfile):
-            feedXML = etree.parse(config.rssfile)
+        if os.path.isfile(rssfile):
+            feedXML = etree.parse(rssfile)
         else:
             feedXML = etree.parse(io.StringIO(emptyfeed))
 
@@ -183,7 +187,7 @@ def pollWebsites():
     if config.enableRSSFeed:
         for o in feedXML.xpath('//channel/item[position()<last()-' + str(config.maxFeeds - 1) + ']'):
             o.getparent().remove(o)
-        file = open(config.rssfile, 'w')
+        file = open(rssfile, 'w')
         file.write(etree.tostring(feedXML, pretty_print=True, xml_declaration=True, encoding=defaultEncoding).decode(defaultEncoding, errors='ignore'))
         file.close()
 
