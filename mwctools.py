@@ -33,12 +33,13 @@ class Receiver(Parser):
 
 
 class Content:
-    def __init__(self, uri, encoding, title, content, contenttype):
+    def __init__(self, uri, encoding, title, content, contenttype, additional=None):
         self.uri = uri
         self.encoding = encoding
         self.title = title
         self.content = content
         self.contenttype = contenttype
+        self.additional = additional
 
 
 # returns a short subject line
