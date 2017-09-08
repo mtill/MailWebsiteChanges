@@ -115,10 +115,13 @@ def storeHashes(name, contentHashes):
             thefile.write(h + "\n")
 
 
-def runParsers(parsers):
-    contentList = []
+def runParsers(parsers, contentList=None):
+    if contentList is None:
+        contentList = []
+
     for parser in parsers:
         contentList = parser.performAction(contentList)
+
     return contentList
 
 
@@ -156,16 +159,16 @@ def pollWebsites():
                 feedXML.xpath('//channel')[0].append(genFeedItem(subject, str(e), "", 0))
             continue
 
-        changes = 0
         sessionHashes = []
+        changedContents = []
         fileHashes = getStoredHashes(site['name'])
         for content in contentList:
 
             contenthash = hashlib.md5(content.content.encode(content.encoding)).hexdigest()
             if contenthash not in fileHashes:
                 if config.maxMailsPerSession == -1 or mailsSent < config.maxMailsPerSession:
-                    changes += 1
                     sessionHashes.append(contenthash)
+                    changedContents.append(content)
 
                     subject = '[' + site['name'] + '] ' + content.title
                     print('    ' + subject)
@@ -175,13 +178,16 @@ def pollWebsites():
                         mailsSent = mailsSent + 1
 
                     if config.enableRSSFeed:
-                        feedXML.xpath('//channel')[0].append(genFeedItem(subject, content.content, content.uri, changes))
+                        feedXML.xpath('//channel')[0].append(genFeedItem(subject, content.content, content.uri, len(changedContents)))
             else:
                 sessionHashes.append(contenthash)
 
-        if changes > 0:
+        if 'postRun' in site:
+            runParsers(site['postRun'], changedContents)
+
+        if len(changedContents) > 0:
             storeHashes(site['name'], sessionHashes)
-            print('        ' + str(changes) + ' updates')
+            print('        ' + str(len(changedContents)) + ' updates')
 
     # store feed
     if config.enableRSSFeed:
