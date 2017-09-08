@@ -1,4 +1,12 @@
-import urllib.request, urllib.error, urllib.parse
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# Copyright: (2013-2017) Michael Till Beck <Debianguru@gmx.de>
+# License: GPL-2.0+
+
+
+import urllib.request
+import urllib.error
 import urllib.parse
 import subprocess
 
@@ -22,13 +30,6 @@ class Parser:
 class Receiver(Parser):
     def __init__(self, uri):
         self.uri = uri
-
-    def run(self):
-        return super().run(contentList=[])
-
-    # output: [Content]
-    def performAction(self):
-        return self.performAction(contentList=[])
 
 
 class Content:
@@ -129,7 +130,6 @@ class XPathParser(Parser):
             result.extend(self.parseOneObject(content))
         return result
 
-
     # input: Content, output: [Content]
     def parseOneObject(self, content):
         baseuri = content.uri
@@ -201,14 +201,12 @@ class RegExParser(Parser):
         self.contentregex = contentregex
         self.titleregex = titleregex
 
-
     # input: [Content], output: [Content]
     def performAction(self, contentList):
         result = []
         for content in contentList:
             result.extend(self.parseOneObject(content))
         return result
-
 
     # input: Content, output: [Content]
     def parseOneObject(self, content):

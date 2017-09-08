@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Copyright: (2013-2015) Michael Till Beck <Debianguru@gmx.de>
+# Copyright: (2013-2017) Michael Till Beck <Debianguru@gmx.de>
 # License: GPL-2.0+
 
 import io
@@ -212,9 +212,9 @@ if __name__ == "__main__":
     config = importlib.import_module(configMod)
 
     if dryrun:
-        for site in config.sites:
-            if site['name'] == dryrun:
-                parseResult = runParsers(site['parsers'])
+        for thesite in config.sites:
+            if thesite['name'] == dryrun:
+                parseResult = runParsers(thesite['parsers'])
                 for p in parseResult:
                     print(p.title)
                     print(p.content)

@@ -1,8 +1,13 @@
-# Copyright: (2013-2014) Michael Till Beck <Debianguru@gmx.de>
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# Copyright: (2013-2017) Michael Till Beck <Debianguru@gmx.de>
 # License: GPL-2.0+
 
-#We collect xpath snippets at this place: <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a> - please feel free to add your own definitions!
 
+# We collect xpath snippets at this place:
+# <a href="https://github.com/Debianguru/MailWebsiteChanges/wiki/snippets">Snippet collection</a>
+# Feel free to contribute!
 
 
 from mwctools import URLReceiver as uri
@@ -12,8 +17,6 @@ from mwctools import CSSParser as css
 from mwctools import RegExParser as regex
 from mwctools import Content
 from mwctools import Parser
-
-import os.path
 
 
 sites = [
