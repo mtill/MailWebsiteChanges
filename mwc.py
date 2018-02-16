@@ -170,7 +170,7 @@ def pollWebsites():
                     sessionHashes.append(contenthash)
                     changedContents.append(content)
 
-                    subject = '[' + site['name'] + '] ' + content.title
+                    subject = '[' + site['name'] + '] ' + ("Update available" if content.title is None else content.title)
                     print('    ' + subject)
                     if config.enableMailNotifications and len(fileHashes) > 0:
                         sendAsHtml = (content.contenttype == 'html')
