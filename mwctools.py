@@ -113,7 +113,7 @@ class CommandReceiver(Receiver):
         thefile.close()
 
         if process.wait() != 0:
-            raise Exception("process terminated with an error")
+            raise Exception("process terminated with an error: " + str(process.stderr))
 
         contentList.append(Content(uri=None, encoding=self.encoding, title=None, content=result, contenttype=self.contenttype))
         return contentList

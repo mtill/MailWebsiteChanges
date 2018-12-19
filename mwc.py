@@ -80,7 +80,7 @@ def sendmail(receiver, subject, content, sendAsHtml, link, encoding=None):
     else:
         if link is not None:
             content = link + '\n\n' + content
-        mail = MIMEText(content, 'text', encoding)
+        mail = MIMEText(content, 'plain', encoding)
 
     mail['From'] = config.sender
     mail['To'] = receiver
@@ -95,7 +95,7 @@ def sendmail(receiver, subject, content, sendAsHtml, link, encoding=None):
         if config.smtpusername is not None:
             mailsession.login(config.smtpusername, config.smtppwd)
 
-    mailsession.sendmail(config.sender, receiver.split(','), mail.as_string())
+    mailsession.send_message(mail)
 
 
 # returns a list of all content that is stored locally for a specific site
