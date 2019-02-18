@@ -107,13 +107,13 @@ class CommandReceiver(Receiver):
             contentList = []
 
         # run command and retrieve output
-        process = subprocess.Popen(self.command, stdout=subprocess.PIPE, shell=True, close_fds=True)
+        process = subprocess.Popen(self.command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True, close_fds=True)
         thefile = process.stdout
         result = thefile.read().decode(self.encoding, errors='ignore')
         thefile.close()
 
         if process.wait() != 0:
-            raise Exception("process terminated with an error: " + str(process.stderr))
+            raise Exception("process terminated with an error: " + str(process.stderr) + "\n" + result)
 
         contentList.append(Content(uri=None, encoding=self.encoding, title=None, content=result, contenttype=self.contenttype))
         return contentList
