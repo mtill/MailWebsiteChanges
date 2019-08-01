@@ -65,7 +65,7 @@ def genFeedItem(subject, content, link, change):
 
 
 # sends mail notification
-def sendmail(receiver, subject, content, sendAsHtml, link, encoding=None):
+def sendmail(receivers, subject, content, sendAsHtml, link, encoding=None):
     global mailsession, defaultEncoding
 
     if encoding is None:
@@ -83,7 +83,7 @@ def sendmail(receiver, subject, content, sendAsHtml, link, encoding=None):
         mail = MIMEText(content, 'plain', encoding)
 
     mail['From'] = config.sender
-    mail['To'] = receiver
+    mail['To'] = ", ".join(receivers)
     mail['Subject'] = Header(subject, encoding)
 
     # initialize session once, not each time this method gets called
@@ -155,7 +155,7 @@ def pollWebsites():
             print('WARNING: ' + str(e))
             if config.enableMailNotifications:
                 if config.maxMailsPerSession == -1 or mailsSent < config.maxMailsPerSession:
-                    sendmail(receiver=receiver, subject=subject, content=str(e), sendAsHtml=False, link=None)
+                    sendmail(receivers=[receiver], subject=subject, content=str(e), sendAsHtml=False, link=None)
                     mailsSent = mailsSent + 1
             if config.enableRSSFeed:
                 feedXML.xpath('//channel')[0].append(genFeedItem(subject, str(e), "", 0))
@@ -176,7 +176,10 @@ def pollWebsites():
                     print('    ' + subject)
                     if config.enableMailNotifications and len(fileHashes) > 0:
                         sendAsHtml = (content.contenttype == 'html')
-                        sendmail(receiver=receiver, subject=subject, content=content.content, sendAsHtml=sendAsHtml, link=content.uri, encoding=content.encoding)
+                        contentReceivers = [receiver]
+                        if content.receivers is not None:
+                            contentReceivers.extend(content.receivers)
+                        sendmail(receivers=contentReceivers, subject=subject, content=content.content, sendAsHtml=sendAsHtml, link=content.uri, encoding=content.encoding)
                         mailsSent = mailsSent + 1
 
                     if config.enableRSSFeed:
@@ -235,7 +238,7 @@ if __name__ == "__main__":
             msg = str(sys.exc_info()[0]) + '\n\n' + traceback.format_exc()
             print(msg)
             if config.receiver != '':
-                sendmail(receiver=config.receiver, subject='[mwc] Something went wrong ...', content=msg, sendAsHtml=False, link=None)
+                sendmail(receivers=[config.receiver], subject='[mwc] Something went wrong ...', content=msg, sendAsHtml=False, link=None)
 
         if mailsession:
             mailsession.quit()
