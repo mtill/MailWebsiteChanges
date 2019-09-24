@@ -168,7 +168,7 @@ def pollWebsites():
 
             contenthash = hashlib.md5(content.content.encode(content.encoding)).hexdigest()
             if contenthash not in fileHashes:
-                if config.maxMailsPerSession == -1 or mailsSent < config.maxMailsPerSession:
+                if (not config.enableMailNotifications) or config.maxMailsPerSession == -1 or mailsSent < config.maxMailsPerSession:
                     sessionHashes.append(contenthash)
                     changedContents.append(content)
 
