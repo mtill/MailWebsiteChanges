@@ -191,7 +191,7 @@ def pollWebsites():
             runParsers(site['postRun'], changedContents)
 
         if len(changedContents) > 0:
-            if site.get("keepHashes", Fales):
+            if site.get("keepHashes", False):
                 sessionHashes.extend(fileHashes)
             storeHashes(site['name'], sessionHashes)
             print('        ' + str(len(changedContents)) + ' updates')
