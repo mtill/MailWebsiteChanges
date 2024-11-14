@@ -49,7 +49,7 @@ def getSubject(textContent):
     
     if textContent is None or len(textContent.strip()) == 0:
         return 'Website has been updated'
-    textContent = re.sub(' +', ' ', re.sub('\s', ' ', textContent)).strip()
+    textContent = re.sub(' +', ' ', re.sub('\\s', ' ', textContent)).strip()
     return (textContent[:maxTitleLength] + ' [..]') if len(textContent) > maxTitleLength else textContent
 
 
